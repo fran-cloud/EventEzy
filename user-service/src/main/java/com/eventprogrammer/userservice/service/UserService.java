@@ -1,5 +1,6 @@
 package com.eventprogrammer.userservice.service;
 
+import com.eventprogrammer.userservice.entity.Reservation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -8,6 +9,11 @@ import com.eventprogrammer.userservice.entity.User;
 import com.eventprogrammer.userservice.repository.UserRepository;
 
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 @Service
 @Slf4j
@@ -22,7 +28,9 @@ public class UserService {
         .nome(userRequest.getNome())
         .cognome(userRequest.getCognome())
         .indirizzo(userRequest.getIndirizzo())
+        .email(userRequest.getEmail())
         .dataNascita(userRequest.getDataNascita())
+        .prenotazioni(userRequest.getPrenotazioni())
         .build();
 
         userRepository.save(user);

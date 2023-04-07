@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:80", "http://localhost:8080" })
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/organizations")
 @Slf4j
 @RequiredArgsConstructor
@@ -60,12 +60,12 @@ public class OrganizationController {
 
     }
 
-   /* @GetMapping("/get-all-organization-events/{id}")
+   @GetMapping("/get-all-organization-events/{id}")
     @ResponseStatus(HttpStatus.OK)
     public List<EventResponse> getAllOrganizationEvent(@PathVariable("id") String id){
         return eventService.getAllOrganizationEvent(id);
 
-    } */
+    }
 
 
     @PostMapping("/create-event")
@@ -73,6 +73,12 @@ public class OrganizationController {
     public Event createEvent(@RequestBody EventRequest eventRequest ){
         return eventService.createEvent(eventRequest);
         
+    }
+
+    @PostMapping("/modify-event/{id}")
+    public Event modifyEvent(@PathVariable("id") String id, @RequestBody EventRequest eventRequest ){
+        return eventService.modifyEvent(id, eventRequest);
+
     }
 
     @GetMapping("/get-all-reservations/{id}")

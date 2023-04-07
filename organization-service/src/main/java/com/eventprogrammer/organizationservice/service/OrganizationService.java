@@ -21,6 +21,7 @@ public class OrganizationService {
         Organization organization = Organization.builder()
         .organizationName(organizationRequest.getOrganizationName())
         .organizationAddress(organizationRequest.getOrganizationAddress())
+        .email(organizationRequest.getEmail())
         .partitaIva(organizationRequest.getPartitaIva())
         .eventiOrganizzati(organizationRequest.getEventiOrganizzati())
         .build();

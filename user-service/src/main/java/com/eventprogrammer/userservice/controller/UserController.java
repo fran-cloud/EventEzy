@@ -57,11 +57,6 @@ public class UserController {
         return reservationService.getAllEvents();
     }
 
-    @GetMapping("/get-all-organization-events/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public List<EventResponse> getAllOrganizationEvent(@PathVariable("id") String id){
-        return reservationService.getAllOrganizationEvent(id);
-    }
 
     @PostMapping("/create-reservation")
     @ResponseStatus(HttpStatus.CREATED)
@@ -71,8 +66,8 @@ public class UserController {
 
     @GetMapping("/get-all-reservations")
     @ResponseStatus(HttpStatus.OK)
-    public List<Reservation> getAllReservation(){
-        return reservationService.getAllReservation();
+    public List<Reservation> getAllReservation(@PathVariable("id") String userId){
+        return reservationService.getAllReservation(userId);
     }
 
     @DeleteMapping("/delete-reservation/{id}")
@@ -82,6 +77,13 @@ public class UserController {
         Map<String,Boolean> response = new HashMap<>();
         response.put("deleted", deleted);
         return ResponseEntity.ok(response);
+    }
+
+
+    @GetMapping("/searchEvent")
+    public List<Event> searchEvent(String txt) {
+        List<Event> events = reservationService.searchEvent(txt);
+        return events;
     }
 
     @GetMapping("/getEventById/{id}")

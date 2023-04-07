@@ -5,10 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.keycloak.KeycloakPrincipal;
-import org.keycloak.KeycloakSecurityContext;
-import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
-import org.keycloak.representations.AccessToken;
+import com.eventprogrammer.userservice.DTO.ReservationResponse;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -40,24 +37,19 @@ public class ReservationService {
     @Autowired
     private UserRepository userRepository;
 
-    /*Salvo una prenotazione inserendo il body della request senza l'id */
+    /*Metodo per effettuare una prenotazione */
     public Reservation createReservation(ReservationRequest reservationRequest){
 
-        AccessToken accessToken = getKeycloakAccessToken();
-       /* Boolean present = userRepository.existsById(accessToken.getId());
-        if(present==false){
-            createUser(accessToken);
-        } */
-
         if(reservationRequest.getEvento().getPrenotazioni().size()<reservationRequest.getEvento().getMaxPrenotati()){
-            //User user = userRepository.findByUserId(accessToken.getId());
+
             Reservation reservation = Reservation.builder()
             .evento(reservationRequest.getEvento())
-            .utenteEmail(accessToken.getEmail())
+            .utenteEmail(reservationRequest.getUtenteEmail())
             .build();  /* Build mi permette di salvare richiamando un costruttore senza inserire l'Id */
 
             reservationRepository.save(reservation);
-            // user.getPrenotazioni().add(reservation);
+            /* User user = userRepository.findByUserId(accessToken.getId());
+            user.getPrenotazioni().add(reservation); */
             log.info("La prenotazione {} è stata salvata", reservation.getReservationId());
             return reservation;
         }
@@ -76,16 +68,7 @@ public class ReservationService {
         return events.stream().map(this::mapToEventResponse).toList();
     }
 
-     /* Con questo prelevo tutti gli eventi di un determinato organizzatore  */
-     public List<EventResponse> getAllOrganizationEvent(String organizationId) {
 
-        Organization organization = organizationRepository.findByOrganizationId(organizationId);
-    	
-    	List<Event> events = organization.getEventiOrganizzati();
-
-        return events.stream().map(this::mapToEventResponse).toList();
-
-    }
 
     /* Metodo ausiliario che serve a mappare una EventResponse in una List */
     private EventResponse mapToEventResponse(Event event){
@@ -99,57 +82,43 @@ public class ReservationService {
         .build();
     }
 
+
+    /*Ricerca evento per nome, tipologia o al nome dell'organizzatore*/
+    public List<Event> searchEvent(String txt){
+
+        List<Event> events = new ArrayList<Event>();
+        events.addAll(eventRepository.findByNome(txt));
+        events.addAll(eventRepository.fingByDescrizione(txt));
+
+        Organization organization = organizationRepository.findByOrganizationName(txt);
+        if (organization != null){
+            String email = organization.getEmail();
+            events.addAll(eventRepository.findByOrganizationEmail(email));
+        }
+
+        return events;
+    }
+
+
+
     /*Con questo prelevo tutte le prenotazioni effettuate da un utente */
-    public List<Reservation> getAllReservation(){
+    public List<Reservation> getAllReservation(String userId){
 
-        AccessToken accessToken = getKeycloakAccessToken();
-        /* Boolean present = userRepository.existsById(accessToken.getId());
-        if(present==false){
-            createUser(accessToken);
-        } */
+        User user = userRepository.findByUserId(userId);
+        List<Reservation> reservations = reservationRepository.findByUtenteEmail(user.getEmail());
 
-        // User user = userRepository.findByUserId(accessToken.getEmail());
-        List<Reservation> reservations = reservationRepository.findByUtenteEmail(accessToken.getEmail());  //user.getPrenotazioni();
-
-        return  reservations;   //reservations.stream().toList();
+        return  reservations;
     }
 
     /*Metodo per eliminare una prenotazione */
     public boolean deleteReservation(String reservationId){
         Reservation reservation = reservationRepository.findByReservationId(reservationId);
+        String email = reservation.getUtenteEmail();
         reservationRepository.delete(reservation);
-        AccessToken accessToken = getKeycloakAccessToken();
-        /*User user = userRepository.findByUserId(accessToken.getId());
-        user.getPrenotazioni().remove(reservation);*/
+        User user = userRepository.findByEmail(email);
+        user.getPrenotazioni().remove(reservation);
         log.info("La prenotazione {} è stata cancellata", reservation.getReservationId());
         return true;
-    }
-
-    private AccessToken getKeycloakAccessToken(){
-        KeycloakAuthenticationToken keycloakAuthenticationToken = (KeycloakAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        KeycloakPrincipal keycloakPrincipal = (KeycloakPrincipal) keycloakAuthenticationToken.getPrincipal();
-        KeycloakSecurityContext keycloakSecurityContext = keycloakPrincipal.getKeycloakSecurityContext();
-        AccessToken accessToken = keycloakSecurityContext.getToken();
-
-        return accessToken;
-    }
-
-    /*Metodo per creare un utente */
-    public void createUser(AccessToken accessToken){
-
-        Map<String, Object> customAttribute = accessToken.getOtherClaims();
-        
-        User user = User.builder()
-        .nome(accessToken.getGivenName())
-        .cognome(accessToken.getFamilyName())
-        .indirizzo(String.valueOf(customAttribute.get("indirizzo")))
-        .email(accessToken.getEmail())
-        .dataNascita((Date) customAttribute.get("dataNascita"))
-        .prenotazioni(new ArrayList<Reservation>())
-        .build();
-
-        userRepository.save(user);
-        log.info("L'utente {} è stato registrato", user.getUserId());
     }
 
     public Event getEventById(String id) {

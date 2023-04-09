@@ -1,14 +1,9 @@
 package com.eventprogrammer.userservice.service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
-import com.eventprogrammer.userservice.DTO.ReservationResponse;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.eventprogrammer.userservice.DTO.EventResponse;
@@ -48,8 +43,8 @@ public class ReservationService {
             .build();  /* Build mi permette di salvare richiamando un costruttore senza inserire l'Id */
 
             reservationRepository.save(reservation);
-            /* User user = userRepository.findByUserId(accessToken.getId());
-            user.getPrenotazioni().add(reservation); */
+            User user = userRepository.findByEmail(reservationRequest.getUtenteEmail());
+            user.getPrenotazioni().add(reservation);
             log.info("La prenotazione {} è stata salvata", reservation.getReservationId());
             return reservation;
         }
@@ -75,7 +70,7 @@ public class ReservationService {
         return EventResponse.builder()
         .eventId(event.getEventId())
         .nome(event.getNome())
-        .descrizione(event.getDescrizione())
+        .tipologia(event.getTipologia())
         .maxPrenotati(event.getMaxPrenotati())
         .dataEoraDate(event.getDataEoraDate())
         .organizationEmail(event.getOrganizationEmail())
@@ -83,18 +78,20 @@ public class ReservationService {
     }
 
 
-    /*Ricerca evento per nome, tipologia o al nome dell'organizzatore*/
+    /*Ricerca evento per nome, tipologia, indirizzo o nome dell'organizzatore*/
     public List<Event> searchEvent(String txt){
 
         List<Event> events = new ArrayList<Event>();
         events.addAll(eventRepository.findByNome(txt));
-        events.addAll(eventRepository.fingByDescrizione(txt));
+        events.addAll(eventRepository.fingByTipologia(txt));
 
         Organization organization = organizationRepository.findByOrganizationName(txt);
         if (organization != null){
             String email = organization.getEmail();
             events.addAll(eventRepository.findByOrganizationEmail(email));
         }
+
+        events.addAll(eventRepository.findByIndirizzo(txt));
 
         return events;
     }

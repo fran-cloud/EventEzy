@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class EventRequest {
 
     private String nome;
-    private String descrizione;
+    private String tipologia;
     private String indirizzo;
     private Date dataEoraDate;
     private int maxPrenotati;

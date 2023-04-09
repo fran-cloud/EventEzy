@@ -21,7 +21,7 @@ public class Event {
     private String eventId;
 
     private String nome;
-    private String descrizione;
+    private String tipologia;
     private String indirizzo;
     private Date dataEoraDate;
     private String organizationEmail;

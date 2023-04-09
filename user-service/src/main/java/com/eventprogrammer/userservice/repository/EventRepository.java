@@ -13,5 +13,7 @@ public interface EventRepository extends MongoRepository<Event, String>{
 
     List<Event> findByNome(String nome);
 
-    List<Event> fingByDescrizione(String descrizione);
+    List<Event> fingByTipologia(String tipologia);
+
+    List<Event> findByIndirizzo(String indirizzo);
 }

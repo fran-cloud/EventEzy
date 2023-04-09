@@ -17,7 +17,7 @@ public class EventResponse {
     
     private String eventId;
     private String nome;
-    private String descrizione;
+    private String tipologia;
     private Date dataEoraDate;
     private String organizationEmail;
     private int maxPrenotati;

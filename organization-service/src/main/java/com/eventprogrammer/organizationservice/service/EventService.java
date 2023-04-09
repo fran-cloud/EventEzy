@@ -34,7 +34,7 @@ public class EventService {
 
         Event event = Event.builder()
          .nome(eventRequest.getNome())
-         .descrizione(eventRequest.getDescrizione())
+         .tipologia(eventRequest.getTipologia())
          .indirizzo(eventRequest.getIndirizzo())
          .dataEoraDate(eventRequest.getDataEoraDate())
          //.organizationEmail()
@@ -76,7 +76,7 @@ public class EventService {
         return EventResponse.builder()
         .eventId(event.getEventId())
         .nome(event.getNome())
-        .descrizione(event.getDescrizione())
+        .tipologia(event.getTipologia())
         .indirizzo(event.getIndirizzo())
         .maxPrenotati(event.getMaxPrenotati())
         .dataEoraDate(event.getDataEoraDate())
@@ -102,18 +102,19 @@ public class EventService {
 
         Event event = eventRepository.findByEventId(eventId);
 
-        /*AccessToken accessToken = getKeycloakAccessToken();
-        Organization organization = organizationRepository.findByOrganizationId(accessToken.getId());
-        organization.getEventiOrganizzati().remove(event);*/
+        Organization organization = organizationRepository.findByEmail(event.getOrganizationEmail());
+        organization.getEventiOrganizzati().remove(event);
 
         event.setNome(eventRequest.getNome());
-        event.setDescrizione(eventRequest.getDescrizione());
+        event.setTipologia(eventRequest.getTipologia());
         event.setIndirizzo(eventRequest.getIndirizzo());
         event.setDataEoraDate(eventRequest.getDataEoraDate());
         event.setMaxPrenotati(eventRequest.getMaxPrenotati());
         event.setPrenotazioni(event.getPrenotazioni());
 
-        //organization.getEventiOrganizzati().add(event);
+        organization.getEventiOrganizzati().add(event);
+
+        //AGGIUNGERE INVIO MAIL A TUTTI I PRENOTATI PER AVVISARE DELLA MODIFICA
 
         return event;
     }
@@ -125,10 +126,9 @@ public class EventService {
     public boolean deleteEvent(String eventId) {
 
         Event event = eventRepository.findByEventId(eventId);
+        Organization organization = organizationRepository.findByEmail(event.getOrganizationEmail());
+        organization.getEventiOrganizzati().remove(event);
         eventRepository.delete(event);
-        /*AccessToken accessToken = getKeycloakAccessToken();
-        Organization organization = organizationRepository.findByOrganizationId(accessToken.getId());
-        organization.getEventiOrganizzati().remove(event);*/
         log.info("L'evento {} è stato cancellato", event.getEventId());
         return true;
     }

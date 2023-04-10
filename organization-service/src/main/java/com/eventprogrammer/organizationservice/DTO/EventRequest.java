@@ -2,10 +2,13 @@ package com.eventprogrammer.organizationservice.DTO;
 
 
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 //import com.eventprogrammer.organizationservice.entity.Organization;
 
+import com.eventprogrammer.organizationservice.entity.Reservation;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,5 +25,6 @@ public class EventRequest {
     private String indirizzo;
     private Date dataEoraDate;
     private int maxPrenotati;
+    private List<Reservation> prenotazioni = new ArrayList<Reservation>();
     
 }

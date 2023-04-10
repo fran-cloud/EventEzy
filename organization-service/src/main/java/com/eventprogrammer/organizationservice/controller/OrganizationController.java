@@ -68,10 +68,10 @@ public class OrganizationController {
     }
 
 
-    @PostMapping("/create-event")
+    @PostMapping("/create-event/{id}")
     @ResponseStatus(HttpStatus.CREATED)
-    public Event createEvent(@RequestBody EventRequest eventRequest ){
-        return eventService.createEvent(eventRequest);
+    public Event createEvent(@RequestBody EventRequest eventRequest, @PathVariable("id") String id){
+        return eventService.createEvent(eventRequest, id);
         
     }
 

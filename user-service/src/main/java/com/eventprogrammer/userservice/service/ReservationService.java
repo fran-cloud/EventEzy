@@ -2,6 +2,7 @@ package com.eventprogrammer.userservice.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,18 +34,25 @@ public class ReservationService {
     private UserRepository userRepository;
 
     /*Metodo per effettuare una prenotazione */
-    public Reservation createReservation(ReservationRequest reservationRequest){
+    public Reservation createReservation(ReservationRequest reservationRequest, String id){
 
         if(reservationRequest.getEvento().getPrenotazioni().size()<reservationRequest.getEvento().getMaxPrenotati()){
 
+            User user = userRepository.findByUserId(id);
+
             Reservation reservation = Reservation.builder()
             .evento(reservationRequest.getEvento())
-            .utenteEmail(reservationRequest.getUtenteEmail())
+            .utenteEmail(user.getEmail())
             .build();  /* Build mi permette di salvare richiamando un costruttore senza inserire l'Id */
 
             reservationRepository.save(reservation);
-            User user = userRepository.findByEmail(reservationRequest.getUtenteEmail());
+
             user.getPrenotazioni().add(reservation);
+            userRepository.save(user);
+
+            Event event = reservationRequest.getEvento();
+            event.getPrenotazioni().add(reservation);
+            eventRepository.save(event);
             log.info("La prenotazione {} è stata salvata", reservation.getReservationId());
             return reservation;
         }
@@ -83,7 +91,7 @@ public class ReservationService {
 
         List<Event> events = new ArrayList<Event>();
         events.addAll(eventRepository.findByNome(txt));
-        events.addAll(eventRepository.fingByTipologia(txt));
+        events.addAll(eventRepository.findByTipologia(txt));
 
         Organization organization = organizationRepository.findByOrganizationName(txt);
         if (organization != null){
@@ -114,6 +122,7 @@ public class ReservationService {
         reservationRepository.delete(reservation);
         User user = userRepository.findByEmail(email);
         user.getPrenotazioni().remove(reservation);
+        userRepository.save(user);
         log.info("La prenotazione {} è stata cancellata", reservation.getReservationId());
         return true;
     }

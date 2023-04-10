@@ -1,5 +1,6 @@
 package com.eventprogrammer.userservice.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -23,10 +24,11 @@ public class Event {
 
     private String nome;
     private String tipologia;
+    private String indirizzo;
     private Date dataEoraDate;
     private String organizationEmail;
     private int maxPrenotati;
-    private List<Reservation> prenotazioni;
+    private List<Reservation> prenotazioni = new ArrayList<Reservation>();
     
 
     

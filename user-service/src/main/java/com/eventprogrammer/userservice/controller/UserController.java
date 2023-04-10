@@ -58,10 +58,10 @@ public class UserController {
     }
 
 
-    @PostMapping("/create-reservation")
+    @PostMapping("/create-reservation/{id}")
     @ResponseStatus(HttpStatus.CREATED)
-    public Reservation createReservation(@RequestBody ReservationRequest reservationRequest ){
-        return reservationService.createReservation(reservationRequest);
+    public Reservation createReservation(@RequestBody ReservationRequest reservationRequest, @PathVariable("id") String userId){
+        return reservationService.createReservation(reservationRequest, userId);
     }
 
     @GetMapping("/get-all-reservations")

@@ -1,5 +1,6 @@
 package com.eventprogrammer.organizationservice.DTO;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.eventprogrammer.organizationservice.entity.Event;
@@ -19,6 +20,6 @@ public class OrganizationRequest {
     private String organizationAddress;
     private String email;
     private String partitaIva;
-    private List<Event> eventiOrganizzati;
+    private List<Event> eventiOrganizzati = new ArrayList<Event>();
 
 }

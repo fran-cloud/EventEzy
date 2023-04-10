@@ -1,5 +1,6 @@
 package com.eventprogrammer.userservice.DTO;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,6 +22,6 @@ public class UserRequest {
     private String indirizzo;
     private String email;
     private Date dataNascita;
-    private List<Reservation> prenotazioni;
+    private List<Reservation> prenotazioni = new ArrayList<Reservation>();
 
 }

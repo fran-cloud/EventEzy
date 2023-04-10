@@ -30,21 +30,23 @@ public class EventService {
     private OrganizationRepository organizationRepository;
 
     /* Quì salvo l'evento inserendo come input il body della request senza l'Id */
-    public Event createEvent(EventRequest eventRequest){
+    public Event createEvent(EventRequest eventRequest, String id){
 
         Event event = Event.builder()
          .nome(eventRequest.getNome())
          .tipologia(eventRequest.getTipologia())
          .indirizzo(eventRequest.getIndirizzo())
          .dataEoraDate(eventRequest.getDataEoraDate())
-         //.organizationEmail()
+         .organizationEmail(organizationRepository.findByOrganizationId(id).getEmail())
          .maxPrenotati(eventRequest.getMaxPrenotati())
+         .prenotazioni(eventRequest.getPrenotazioni())
 
          .build();  /* Build mi permette di salvare richiamando un costruttore senza inserire l'Id */
 
         eventRepository.save(event);
-        /* Organization organization = organizationRepository.findByOrganizationId(accessToken.getId());
-        organization.getEventiOrganizzati().add(event); */
+        Organization organization = organizationRepository.findByOrganizationId(id);
+        organization.getEventiOrganizzati().add(event);
+        organizationRepository.save(organization);
         log.info("L'evento {} è stato salvato", event.getEventId());
         return event;
     }
@@ -113,6 +115,8 @@ public class EventService {
         event.setPrenotazioni(event.getPrenotazioni());
 
         organization.getEventiOrganizzati().add(event);
+        organizationRepository.save(organization);
+        eventRepository.save(event);
 
         //AGGIUNGERE INVIO MAIL A TUTTI I PRENOTATI PER AVVISARE DELLA MODIFICA
 
@@ -128,6 +132,7 @@ public class EventService {
         Event event = eventRepository.findByEventId(eventId);
         Organization organization = organizationRepository.findByEmail(event.getOrganizationEmail());
         organization.getEventiOrganizzati().remove(event);
+        organizationRepository.save(organization);
         eventRepository.delete(event);
         log.info("L'evento {} è stato cancellato", event.getEventId());
         return true;

@@ -16,7 +16,8 @@ public class Reservation {
     @Id
     private String reservationId;
 
-    private Event evento;
+    private String eventId;
+    private String eventName;
     private String utenteEmail;
   
     

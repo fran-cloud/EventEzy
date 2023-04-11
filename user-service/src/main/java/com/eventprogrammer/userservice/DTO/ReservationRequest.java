@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ReservationRequest {
     
-    private Event evento;
+    private String eventId;
+    private String eventName;
     private String utenteEmail;
 }

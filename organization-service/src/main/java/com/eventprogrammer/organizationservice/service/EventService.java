@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.eventprogrammer.organizationservice.entity.User;
+import com.eventprogrammer.organizationservice.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,8 @@ public class EventService {
     private EventRepository eventRepository;
     @Autowired
     private OrganizationRepository organizationRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     /* Quì salvo l'evento inserendo come input il body della request senza l'Id */
     public Event createEvent(EventRequest eventRequest, String id){
@@ -43,10 +47,19 @@ public class EventService {
 
          .build();  /* Build mi permette di salvare richiamando un costruttore senza inserire l'Id */
 
-        eventRepository.save(event);
         Organization organization = organizationRepository.findByOrganizationId(id);
-        organization.getEventiOrganizzati().add(event);
+        List<String> check = organization.getEventiOrganizzati();
+        for (int i=0; i<check.size(); i++) {
+            Event event_check = eventRepository.findByEventId(check.get(i));
+            if (event_check.getNome()==eventRequest.getNome()) {
+                log.info("È già stato creato un evento con questo nome");
+                return null;
+            }
+        }
+        eventRepository.save(event);
+        organization.getEventiOrganizzati().add(event.getEventId());
         organizationRepository.save(organization);
+
         log.info("L'evento {} è stato salvato", event.getEventId());
         return event;
     }
@@ -66,7 +79,8 @@ public class EventService {
     public List<EventResponse> getAllOrganizationEvent(String organizationId) {
 
         Organization organization = organizationRepository.findByOrganizationId(organizationId);
-    	List<Event> events = organization.getEventiOrganizzati();
+        String email= organization.getEmail();
+    	List<Event> events = eventRepository.findByOrganizationEmail(email);
 
         return events.stream().map(this::mapToEventResponse).toList();
     }
@@ -105,7 +119,7 @@ public class EventService {
         Event event = eventRepository.findByEventId(eventId);
 
         Organization organization = organizationRepository.findByEmail(event.getOrganizationEmail());
-        organization.getEventiOrganizzati().remove(event);
+        organization.getEventiOrganizzati().remove(event.getEventId());
 
         event.setNome(eventRequest.getNome());
         event.setTipologia(eventRequest.getTipologia());
@@ -114,7 +128,7 @@ public class EventService {
         event.setMaxPrenotati(eventRequest.getMaxPrenotati());
         event.setPrenotazioni(event.getPrenotazioni());
 
-        organization.getEventiOrganizzati().add(event);
+        organization.getEventiOrganizzati().add(event.getEventId());
         organizationRepository.save(organization);
         eventRepository.save(event);
 
@@ -131,8 +145,18 @@ public class EventService {
 
         Event event = eventRepository.findByEventId(eventId);
         Organization organization = organizationRepository.findByEmail(event.getOrganizationEmail());
-        organization.getEventiOrganizzati().remove(event);
+        organization.getEventiOrganizzati().remove(eventId);
         organizationRepository.save(organization);
+
+        List<Reservation> pren_effettuate = event.getPrenotazioni();
+        if (pren_effettuate.size()>0) {
+            for (int i = 0; i < pren_effettuate.size(); i++) {
+                String email = pren_effettuate.get(i).getUtenteEmail();
+                User user = userRepository.findByEmail(email);
+                user.getPrenotazioni().remove(pren_effettuate.get(i));
+                userRepository.save(user);
+            }
+        }
         eventRepository.delete(event);
         log.info("L'evento {} è stato cancellato", event.getEventId());
         return true;

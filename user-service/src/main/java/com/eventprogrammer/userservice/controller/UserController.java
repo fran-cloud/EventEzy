@@ -64,7 +64,7 @@ public class UserController {
         return reservationService.createReservation(reservationRequest, userId);
     }
 
-    @GetMapping("/get-all-reservations")
+    @GetMapping("/get-all-reservations/{id}")
     @ResponseStatus(HttpStatus.OK)
     public List<Reservation> getAllReservation(@PathVariable("id") String userId){
         return reservationService.getAllReservation(userId);

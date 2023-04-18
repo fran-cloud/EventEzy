@@ -1,13 +1,10 @@
 package com.eventprogrammer.organizationservice.service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import com.eventprogrammer.organizationservice.entity.User;
+import com.eventprogrammer.organizationservice.repository.ReservationRepository;
 import com.eventprogrammer.organizationservice.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.eventprogrammer.organizationservice.DTO.EventRequest;
@@ -32,6 +29,8 @@ public class EventService {
     private OrganizationRepository organizationRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private ReservationRepository reservationRepository;
 
     /* Quì salvo l'evento inserendo come input il body della request senza l'Id */
     public Event createEvent(EventRequest eventRequest, String id){
@@ -43,22 +42,20 @@ public class EventService {
          .dataEoraDate(eventRequest.getDataEoraDate())
          .organizationEmail(organizationRepository.findByOrganizationId(id).getEmail())
          .maxPrenotati(eventRequest.getMaxPrenotati())
-         .prenotazioni(eventRequest.getPrenotazioni())
+         .postiDisponibili(eventRequest.getMaxPrenotati())
 
          .build();  /* Build mi permette di salvare richiamando un costruttore senza inserire l'Id */
 
         Organization organization = organizationRepository.findByOrganizationId(id);
-        List<String> check = organization.getEventiOrganizzati();
-        for (int i=0; i<check.size(); i++) {
-            Event event_check = eventRepository.findByEventId(check.get(i));
-            if (event_check.getNome()==eventRequest.getNome()) {
+        String email = organization.getEmail();
+        List<Event> events = eventRepository.findByOrganizationEmail(email);
+        for (int i=0; i<events.size(); i++) {
+            if (events.get(i).getNome()==eventRequest.getNome()) {
                 log.info("È già stato creato un evento con questo nome");
                 return null;
             }
         }
         eventRepository.save(event);
-        organization.getEventiOrganizzati().add(event.getEventId());
-        organizationRepository.save(organization);
 
         log.info("L'evento {} è stato salvato", event.getEventId());
         return event;
@@ -97,6 +94,7 @@ public class EventService {
         .maxPrenotati(event.getMaxPrenotati())
         .dataEoraDate(event.getDataEoraDate())
         .organizationEmail(event.getOrganizationEmail())
+        .postiDisponibili(event.getPostiDisponibili())
         .build();
 
     }
@@ -105,10 +103,8 @@ public class EventService {
 
     /* Con questo prelevo tutte le prenotazioni di un determinato evento  */
     public List<Reservation> getAllReservation(String eventId) {
-
-        Event event = eventRepository.findByEventId(eventId);
     	
-    	List<Reservation> reservations = event.getPrenotazioni();
+    	List<Reservation> reservations = reservationRepository.findByEventId(eventId);
 
         return reservations.stream().toList();
     }
@@ -118,19 +114,24 @@ public class EventService {
 
         Event event = eventRepository.findByEventId(eventId);
 
-        Organization organization = organizationRepository.findByEmail(event.getOrganizationEmail());
-        organization.getEventiOrganizzati().remove(event.getEventId());
+        List<Reservation> reservations = reservationRepository.findByEventId(eventId);
 
         event.setNome(eventRequest.getNome());
         event.setTipologia(eventRequest.getTipologia());
         event.setIndirizzo(eventRequest.getIndirizzo());
         event.setDataEoraDate(eventRequest.getDataEoraDate());
         event.setMaxPrenotati(eventRequest.getMaxPrenotati());
-        event.setPrenotazioni(event.getPrenotazioni());
+        event.setPostiDisponibili(eventRequest.getMaxPrenotati()-reservations.size());
 
-        organization.getEventiOrganizzati().add(event.getEventId());
-        organizationRepository.save(organization);
         eventRepository.save(event);
+
+        for (int i=0; i<reservations.size(); i++){
+            Reservation reservation = reservations.get(i);
+            reservation.setEventName(eventRequest.getNome());
+            reservation.setEventAddress(eventRequest.getIndirizzo());
+            reservation.setEventData(eventRequest.getDataEoraDate());
+            reservationRepository.save(reservation);
+        }
 
         //AGGIUNGERE INVIO MAIL A TUTTI I PRENOTATI PER AVVISARE DELLA MODIFICA
 
@@ -144,17 +145,12 @@ public class EventService {
     public boolean deleteEvent(String eventId) {
 
         Event event = eventRepository.findByEventId(eventId);
-        Organization organization = organizationRepository.findByEmail(event.getOrganizationEmail());
-        organization.getEventiOrganizzati().remove(eventId);
-        organizationRepository.save(organization);
 
-        List<Reservation> pren_effettuate = event.getPrenotazioni();
+        List<Reservation> pren_effettuate = reservationRepository.findByEventId(eventId);
         if (pren_effettuate.size()>0) {
             for (int i = 0; i < pren_effettuate.size(); i++) {
-                String email = pren_effettuate.get(i).getUtenteEmail();
-                User user = userRepository.findByEmail(email);
-                user.getPrenotazioni().remove(pren_effettuate.get(i));
-                userRepository.save(user);
+                reservationRepository.delete(pren_effettuate.get(i));
+                //INVIO MAIL AGLI USER INTERESSATI
             }
         }
         eventRepository.delete(event);

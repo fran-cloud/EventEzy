@@ -25,6 +25,5 @@ public class EventRequest {
     private String indirizzo;
     private Date dataEoraDate;
     private int maxPrenotati;
-    private List<Reservation> prenotazioni = new ArrayList<Reservation>();
     
 }

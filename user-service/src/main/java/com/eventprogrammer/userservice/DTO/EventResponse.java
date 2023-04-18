@@ -22,4 +22,5 @@ public class EventResponse {
     private Date dataEoraDate;
     private String organizationEmail;
     private int maxPrenotati;
+    private int postiDisponibili;
 }

@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Builder
 @Data
 @AllArgsConstructor
@@ -15,6 +17,5 @@ import lombok.NoArgsConstructor;
 public class ReservationRequest {
     
     private String eventId;
-    private String eventName;
     private String utenteEmail;
 }

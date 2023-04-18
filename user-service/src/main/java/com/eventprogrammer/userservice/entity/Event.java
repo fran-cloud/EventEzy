@@ -28,7 +28,7 @@ public class Event {
     private Date dataEoraDate;
     private String organizationEmail;
     private int maxPrenotati;
-    private List<Reservation> prenotazioni = new ArrayList<Reservation>();
+    private int postiDisponibili;
     
 
     

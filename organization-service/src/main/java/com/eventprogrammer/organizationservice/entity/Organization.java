@@ -26,7 +26,6 @@ public class Organization {
     private String organizationAddress;
     private String email;
     private String partitaIva;
-    private List<String> eventiOrganizzati;
 
 
 }

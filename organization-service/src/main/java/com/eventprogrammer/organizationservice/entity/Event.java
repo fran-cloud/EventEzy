@@ -27,7 +27,7 @@ public class Event {
     private Date dataEoraDate;
     private String organizationEmail;
     private int maxPrenotati;
-    private List<Reservation> prenotazioni;
+    private int postiDisponibili;
     
 
     

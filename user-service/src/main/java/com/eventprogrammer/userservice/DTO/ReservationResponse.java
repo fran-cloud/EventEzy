@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Builder
 @Data
 @AllArgsConstructor
@@ -15,6 +17,10 @@ import lombok.NoArgsConstructor;
 public class ReservationResponse {
     
     private String reservationId;
-    private Event evento;
+    private String eventId;
+    private String eventName;
+    private String eventAddress;
+    private Date eventData;
+    private String organizationEmail;
     private String utenteEmail;
 }

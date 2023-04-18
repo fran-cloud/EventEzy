@@ -23,7 +23,6 @@ public class OrganizationService {
         .organizationAddress(organizationRequest.getOrganizationAddress())
         .email(organizationRequest.getEmail())
         .partitaIva(organizationRequest.getPartitaIva())
-        .eventiOrganizzati(organizationRequest.getEventiOrganizzati())
         .build();
 
         organizationRepository.save(organization);

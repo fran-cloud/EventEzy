@@ -30,7 +30,6 @@ public class UserService {
         .indirizzo(userRequest.getIndirizzo())
         .email(userRequest.getEmail())
         .dataNascita(userRequest.getDataNascita())
-        .prenotazioni(userRequest.getPrenotazioni())
         .build();
 
         userRepository.save(user);

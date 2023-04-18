@@ -27,6 +27,5 @@ public class User {
     private String indirizzo;
     private String email;
     private Date dataNascita;
-    private List<Reservation> prenotazioni;
 
 }

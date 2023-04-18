@@ -21,6 +21,5 @@ public class UserResponse {
     private String indirizzo;
     private String email;
     private Date dataNascita;
-    private List<Reservation> prenotazioni;
 
 }

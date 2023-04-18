@@ -36,32 +36,34 @@ public class ReservationService {
     /*Metodo per effettuare una prenotazione */
     public Reservation createReservation(ReservationRequest reservationRequest, String id){
 
-        Event event = eventRepository.findByEventId(reservationRequest.getEventId());
-        if(event.getPrenotazioni().size()<event.getMaxPrenotati()){
+        User user = userRepository.findByUserId(id);
 
-            User user = userRepository.findByUserId(id);
+        List<Reservation> check = reservationRepository.findByUtenteEmail(user.getEmail());
+        for (int i=0; i<check.size(); i++) {
+            if (check.get(i).getEventId() == reservationRequest.getEventId()) {
+                log.info("È già presente una prenotazione per questo evento");
+                return null;
+            }
+        }
+
+
+        Event event = eventRepository.findByEventId(reservationRequest.getEventId());
+        if(event.getPostiDisponibili()>0){
 
             Reservation reservation = Reservation.builder()
             .eventId(event.getEventId())
             .eventName(event.getNome())
+            .eventAddress(event.getIndirizzo())
+            .eventData(event.getDataEoraDate())
+            .organizationEmail(event.getOrganizationEmail())
             .utenteEmail(user.getEmail())
             .build();  /* Build mi permette di salvare richiamando un costruttore senza inserire l'Id */
 
-            List<Reservation> check = user.getPrenotazioni();
-            for (int i=0; i<check.size(); i++){
-                if (check.get(i).getEventName()==event.getNome()){
-                    log.info("È già presente una prenotazione per questo evento");
-                    return null;
-                }
-            }
-            //reservationRepository.save(reservation);
-
-            user.getPrenotazioni().add(reservation);
-            userRepository.save(user);
-
-            //Event event = eventRepository.findByEventId(reservationRequest.getEvento().getEventId());
-            event.getPrenotazioni().add(reservation);
+            event.setPostiDisponibili(event.getPostiDisponibili()-1);
             eventRepository.save(event);
+
+            reservationRepository.save(reservation);
+
             log.info("La prenotazione {} è stata salvata", reservation.getReservationId());
             return reservation;
         }
@@ -92,6 +94,7 @@ public class ReservationService {
         .maxPrenotati(event.getMaxPrenotati())
         .dataEoraDate(event.getDataEoraDate())
         .organizationEmail(event.getOrganizationEmail())
+        .postiDisponibili(event.getPostiDisponibili())
         .build();
     }
 
@@ -121,7 +124,7 @@ public class ReservationService {
 
         User user = userRepository.findByUserId(userId);
         //List<Reservation> reservations = reservationRepository.findByUtenteEmail(user.getEmail());
-        List<Reservation> reservations = user.getPrenotazioni();
+        List<Reservation> reservations = reservationRepository.findByUtenteEmail(user.getEmail());
 
         return  reservations;
     }
@@ -129,14 +132,10 @@ public class ReservationService {
     /*Metodo per eliminare una prenotazione */
     public boolean deleteReservation(String reservationId){
         Reservation reservation = reservationRepository.findByReservationId(reservationId);
-        String email = reservation.getUtenteEmail();
         Event event = eventRepository.findByEventId(reservation.getEventId());
-        //reservationRepository.delete(reservation);
-        User user = userRepository.findByEmail(email);
-        user.getPrenotazioni().remove(reservation);
-        userRepository.save(user);
-        event.getPrenotazioni().remove(reservation);
+        event.setPostiDisponibili(event.getPostiDisponibili()+1);
         eventRepository.save(event);
+        reservationRepository.delete(reservation);
 
         log.info("La prenotazione {} è stata cancellata", reservation.getReservationId());
         return true;

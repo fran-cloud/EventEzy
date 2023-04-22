@@ -50,7 +50,7 @@ public class EventService {
         String email = organization.getEmail();
         List<Event> events = eventRepository.findByOrganizationEmail(email);
         for (int i=0; i<events.size(); i++) {
-            if (events.get(i).getNome()==eventRequest.getNome()) {
+            if (events.get(i).getNome().equals(eventRequest.getNome())) {
                 log.info("È già stato creato un evento con questo nome");
                 return null;
             }

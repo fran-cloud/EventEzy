@@ -40,7 +40,7 @@ public class ReservationService {
 
         List<Reservation> check = reservationRepository.findByUtenteEmail(user.getEmail());
         for (int i=0; i<check.size(); i++) {
-            if (check.get(i).getEventId() == reservationRequest.getEventId()) {
+            if (check.get(i).getEventId().equals(reservationRequest.getEventId())) {
                 log.info("È già presente una prenotazione per questo evento");
                 return null;
             }

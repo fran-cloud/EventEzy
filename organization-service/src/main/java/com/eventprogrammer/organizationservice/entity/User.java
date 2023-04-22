@@ -24,6 +24,10 @@ public class User {
     private String indirizzo;
     private String email;
     private Date dataNascita;
+    private String role;
+    private String password;
+    private Boolean locked;
+    private Boolean enabled;
 
     
 }

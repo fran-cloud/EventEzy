@@ -22,4 +22,8 @@ public class Organization {
     private String organizationAddress;
     private String email;
     private String partitaIva;
+    private String role;
+    private String password;
+    private Boolean locked;
+    private Boolean enabled;
 }

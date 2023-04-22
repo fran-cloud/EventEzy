@@ -20,5 +20,5 @@ public class OrganizationRequest {
     private String organizationAddress;
     private String email;
     private String partitaIva;
-
+    private String password;
 }

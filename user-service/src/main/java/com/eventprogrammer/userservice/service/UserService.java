@@ -30,6 +30,10 @@ public class UserService {
         .indirizzo(userRequest.getIndirizzo())
         .email(userRequest.getEmail())
         .dataNascita(userRequest.getDataNascita())
+        .role("User")
+        .password(userRequest.getPassword())
+        .locked(false)
+        .enabled(true)
         .build();
 
         userRepository.save(user);

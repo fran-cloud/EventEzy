@@ -34,7 +34,7 @@ public class OrganizationController {
     @Autowired
     private EventService eventService;
 
-    @PostMapping("/create-organization")
+    @PostMapping("/registration")
     @ResponseStatus(HttpStatus.CREATED)
     public void createOrganization(@RequestBody OrganizationRequest organizationRequest ){
         organizationService.createOrganization(organizationRequest);

@@ -22,5 +22,6 @@ public class UserRequest {
     private String indirizzo;
     private String email;
     private Date dataNascita;
+    private String password;
 
 }

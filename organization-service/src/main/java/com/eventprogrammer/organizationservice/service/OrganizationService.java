@@ -1,5 +1,7 @@
 package com.eventprogrammer.organizationservice.service;
 
+import Eccezioni.GenericErrorException;
+import com.eventprogrammer.organizationservice.config.PasswordEncoder;
 import com.eventprogrammer.organizationservice.entity.ConfirmationToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,16 +28,18 @@ public class OrganizationService implements UserDetailsService {
 
     @Autowired
     private OrganizationRepository organizationRepository;
+    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
     private ConfirmationTokenService confirmationTokenService;
+    @Autowired
     private EmailSend emailSend;
 
     /*Metodo per creare una organizzazione */
-    public void createOrganization(OrganizationRequest organizationRequest){
+    public void createOrganization(OrganizationRequest organizationRequest) throws GenericErrorException {
 
         if (organizationRepository.findByEmail(organizationRequest.getEmail())!=null){
-            log.info("Email già utilizzata");
-            return ;
+            throw new GenericErrorException("Esiste già un utente registrato con questa email", "ORG01");
         }
 
         Organization organization = Organization.builder()
@@ -62,7 +66,7 @@ public class OrganizationService implements UserDetailsService {
 
         confirmationTokenService.saveConfirmationToken(confirmationToken);
 
-        String link = "http://localhost:8080/api/v1/registration/confirm?token=" + token;
+        String link = "http://localhost:9001/organizations/confirm?token=" + token;
         emailSend.send(organization.getEmail(), buildEmail(organization.getOrganizationName(),link));
     }
 

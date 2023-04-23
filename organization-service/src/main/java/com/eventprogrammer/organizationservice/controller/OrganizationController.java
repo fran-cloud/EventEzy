@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import Eccezioni.GenericErrorException;
 import com.eventprogrammer.organizationservice.entity.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,11 +35,17 @@ public class OrganizationController {
     @Autowired
     private EventService eventService;
 
-    @PostMapping("/registration")
+    @PostMapping("/create-organization")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createOrganization(@RequestBody OrganizationRequest organizationRequest ){
+    public void createOrganization(@RequestBody OrganizationRequest organizationRequest ) throws GenericErrorException {
         organizationService.createOrganization(organizationRequest);
     }
+
+    @GetMapping(path = "/confirm")
+    public String confirm(@RequestParam("token") String token) {
+        return organizationService.confirmToken(token);
+    }
+
 
     @PostMapping("/save-organization")
     public Organization saveOrganization(@RequestBody Organization organization)

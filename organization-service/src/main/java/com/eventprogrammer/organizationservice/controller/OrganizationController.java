@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import Eccezioni.GenericErrorException;
+import com.eventprogrammer.organizationservice.eccezioni.GenericErrorException;
 import com.eventprogrammer.organizationservice.entity.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -77,7 +77,7 @@ public class OrganizationController {
 
     @PostMapping("/create-event/{id}")
     @ResponseStatus(HttpStatus.CREATED)
-    public Event createEvent(@RequestBody EventRequest eventRequest, @PathVariable("id") String id){
+    public Event createEvent(@RequestBody EventRequest eventRequest, @PathVariable("id") String id) throws GenericErrorException{
         return eventService.createEvent(eventRequest, id);
         
     }
@@ -96,7 +96,7 @@ public class OrganizationController {
     }
 
     @DeleteMapping("/delete-event/{id}")
-    public ResponseEntity<Map<String,Boolean>> deleteEvent(@PathVariable("id") String id){
+    public ResponseEntity<Map<String,Boolean>> deleteEvent(@PathVariable("id") String id) throws GenericErrorException{
         boolean deleted = false;
         deleted = eventService.deleteEvent(id);
         Map<String,Boolean> response = new HashMap<>();

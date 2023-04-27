@@ -1,4 +1,4 @@
-package Eccezioni;
+package com.eventprogrammer.organizationservice.eccezioni;
 
 public class GenericErrorException extends Exception{
 

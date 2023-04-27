@@ -2,6 +2,8 @@ package com.eventprogrammer.organizationservice.service;
 
 import java.util.List;
 
+import com.eventprogrammer.organizationservice.DTO.Email;
+import com.eventprogrammer.organizationservice.eccezioni.GenericErrorException;
 import com.eventprogrammer.organizationservice.repository.ReservationRepository;
 import com.eventprogrammer.organizationservice.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +33,11 @@ public class EventService {
     private UserRepository userRepository;
     @Autowired
     private ReservationRepository reservationRepository;
+    @Autowired
+    private EmailSend emailSend;
 
     /* Quì salvo l'evento inserendo come input il body della request senza l'Id */
-    public Event createEvent(EventRequest eventRequest, String id){
+    public Event createEvent(EventRequest eventRequest, String id) throws GenericErrorException {
 
         Event event = Event.builder()
          .nome(eventRequest.getNome())
@@ -51,8 +55,7 @@ public class EventService {
         List<Event> events = eventRepository.findByOrganizationEmail(email);
         for (int i=0; i<events.size(); i++) {
             if (events.get(i).getNome().equals(eventRequest.getNome())) {
-                log.info("È già stato creato un evento con questo nome");
-                return null;
+                throw new GenericErrorException("È già stato creato un evento con questo nome", "E01");
             }
         }
         eventRepository.save(event);
@@ -131,9 +134,10 @@ public class EventService {
             reservation.setEventAddress(eventRequest.getIndirizzo());
             reservation.setEventData(eventRequest.getDataEoraDate());
             reservationRepository.save(reservation);
+            //INVIO MAIL AGLI USER INTERESSATI
+            Email email = new Email(buildEmail(reservation.getUtenteEmail(), event,1),"Evento Modificato");
+            emailSend.send(reservation.getUtenteEmail(),email);
         }
-
-        //AGGIUNGERE INVIO MAIL A TUTTI I PRENOTATI PER AVVISARE DELLA MODIFICA
 
         return event;
     }
@@ -142,20 +146,46 @@ public class EventService {
 
 
     /* Metodo per eliminare un evento */ 
-    public boolean deleteEvent(String eventId) {
+    public boolean deleteEvent(String eventId) throws GenericErrorException{
 
         Event event = eventRepository.findByEventId(eventId);
+
+        if (event == null){
+            throw new GenericErrorException("L'evento selezionato non esiste", "E02");
+        }
 
         List<Reservation> pren_effettuate = reservationRepository.findByEventId(eventId);
         if (pren_effettuate.size()>0) {
             for (int i = 0; i < pren_effettuate.size(); i++) {
+                Reservation reservation = pren_effettuate.get(i);
                 reservationRepository.delete(pren_effettuate.get(i));
                 //INVIO MAIL AGLI USER INTERESSATI
+                Email email = new Email(buildEmail(reservation.getUtenteEmail(), event,0),"Evento Cancellato");
+                emailSend.send(reservation.getUtenteEmail(),email);
             }
         }
         eventRepository.delete(event);
         log.info("L'evento {} è stato cancellato", event.getEventId());
         return true;
+    }
+
+
+    private String buildEmail(String name, Event event, int cod) {
+        String msg = new String();
+
+        if (cod==0){
+            msg = "Ciao " + name + ",\nl'evento " + event.getNome() +" previsto per la data "
+            + event.getDataEoraDate() + " è stato cancellato."
+                    + "Contatta l'organizzatore all'indirizzo " + event.getOrganizationEmail()
+                    +" per saperne di più. \n\n EventEzy Team.";
+        }
+        if (cod==1){
+            msg = "Ciao " + name + ",\nl'evento " + event.getNome() +" previsto per la data "
+                    + event.getDataEoraDate() + " ha subito delle modifiche che possono riguardare la data, l'ora," +
+                    "il luogo o altri dettagli. Controlla la tua area personale per prednere visione dei nuovi dettagli." +
+                    "Ricorda che in caso di problemi è sempre possibile eliminare la propria prenotazione. \n\n EventEzy Team.";
+        }
+        return msg;
     }
     
 }

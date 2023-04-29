@@ -36,11 +36,7 @@ public class OrganizationController {
     @Autowired
     private OrganizationService organizationService;
     @Autowired
-    private OrganizationRepository organizationRepository;
-    @Autowired
     private EventService eventService;
-    @Autowired
-    private JwtService jwtService;
 
     @PostMapping("/create-organization")
     @ResponseStatus(HttpStatus.CREATED)

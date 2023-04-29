@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.eventprogrammer.userservice.eccezioni.GenericErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,19 +35,18 @@ public class ReservationService {
     private UserRepository userRepository;
 
     /*Metodo per effettuare una prenotazione */
-    public Reservation createReservation(ReservationRequest reservationRequest, String id){
+    public Reservation createReservation(ReservationRequest reservationRequest, String id) throws GenericErrorException {
 
         User user = userRepository.findByUserId(id);
-
+        //Controllo se è già presente una prenotazione per l'evento selezionato
         List<Reservation> check = reservationRepository.findByUtenteEmail(user.getEmail());
         for (int i=0; i<check.size(); i++) {
             if (check.get(i).getEventId().equals(reservationRequest.getEventId())) {
-                log.info("È già presente una prenotazione per questo evento");
-                return null;
+                throw new GenericErrorException("È già stata effettuata una prenotazione per questo evento", "R01");
             }
         }
 
-
+        //Controllo se ci sono posti disponibili e in caso di risposta affermativa registro la prenotazione
         Event event = eventRepository.findByEventId(reservationRequest.getEventId());
         if(event.getPostiDisponibili()>0){
 
@@ -68,10 +68,8 @@ public class ReservationService {
             return reservation;
         }
         else{
-            log.info("L'evento è sold out");
-            return null;
+            throw new GenericErrorException("L'evento è SOLD OUT", "R02");
         }
-
 
     }
 

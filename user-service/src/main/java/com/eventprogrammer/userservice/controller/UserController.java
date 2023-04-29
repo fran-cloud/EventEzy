@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.eventprogrammer.userservice.DTO.AuthenticationRequest;
+import com.eventprogrammer.userservice.DTO.AuthenticationResponse;
+import com.eventprogrammer.userservice.eccezioni.GenericErrorException;
 import com.eventprogrammer.userservice.entity.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,8 +38,19 @@ public class UserController {
 
     @PostMapping("/create-user")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createUser(@RequestBody UserRequest userRequest ){
-        userService.createUser(userRequest);
+    public AuthenticationResponse createUser(@RequestBody UserRequest userRequest ) throws GenericErrorException {
+        return userService.createUser(userRequest);
+    }
+
+    @GetMapping("/confirm")
+    public String confirm(@RequestParam("token") String token) {
+        return userService.confirmToken(token);
+    }
+
+
+    @PostMapping("/login")
+    public AuthenticationResponse login(@RequestBody AuthenticationRequest authenticationRequest) throws GenericErrorException {
+        return login(authenticationRequest);
     }
 
     @PostMapping("/save-user")
@@ -60,7 +74,7 @@ public class UserController {
 
     @PostMapping("/create-reservation/{id}")
     @ResponseStatus(HttpStatus.CREATED)
-    public Reservation createReservation(@RequestBody ReservationRequest reservationRequest, @PathVariable("id") String userId){
+    public Reservation createReservation(@RequestBody ReservationRequest reservationRequest, @PathVariable("id") String userId) throws GenericErrorException {
         return reservationService.createReservation(reservationRequest, userId);
     }
 

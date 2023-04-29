@@ -123,7 +123,6 @@ public class OrganizationService implements UserDetailsService {
         if (organization == null) {
             throw new GenericErrorException("Organizzatore non registrato", "O03");
         }
-
         var jwtToken = jwtService.generateToken(organization);
         return AuthenticationResponse.builder().accessToken(jwtToken).build();
     }

@@ -1,34 +1,59 @@
 package com.eventprogrammer.organizationservice.config;
 
+import com.eventprogrammer.organizationservice.Filter.JwtAuthenticationFilter;
 import com.eventprogrammer.organizationservice.service.OrganizationService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 
 @Configuration
 @EnableWebSecurity
-@AllArgsConstructor
+@RequiredArgsConstructor
+@EnableMethodSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    AuthenticationEntryPoint authExceptionHandler;
+    @Autowired
+    private JwtAuthenticationFilter jwtFilter;
+    @Autowired
     private OrganizationService organizationService;
+    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable();
-                /*.authorizeRequests()
-                    .antMatchers("organizations/registration/**")
-                    .permitAll()
+
+        http.cors().and().csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/organizations/login","/organizations/create-organization","/organizations/confirm")
+                .permitAll()
                 .anyRequest()
-                .authenticated().and()
-                .formLogin().disable();*/
+                .authenticated()
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        http.exceptionHandling().authenticationEntryPoint(authExceptionHandler);
+
+
+        //necessario per la console h2
+        http.headers().frameOptions().sameOrigin();
+
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override
@@ -36,7 +61,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         auth.authenticationProvider(daoAuthenticationProvider());
     }
 
-    @Bean
+
     public DaoAuthenticationProvider daoAuthenticationProvider() {
 
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -45,4 +70,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         provider.setUserDetailsService(organizationService);
         return provider;
     }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
+
 }

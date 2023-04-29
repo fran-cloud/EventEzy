@@ -1,10 +1,16 @@
 package com.eventprogrammer.organizationservice.service;
 
+import com.eventprogrammer.organizationservice.DTO.AuthenticationRequest;
+import com.eventprogrammer.organizationservice.DTO.AuthenticationResponse;
 import com.eventprogrammer.organizationservice.DTO.Email;
+import com.eventprogrammer.organizationservice.Util.JwtService;
 import com.eventprogrammer.organizationservice.eccezioni.GenericErrorException;
 import com.eventprogrammer.organizationservice.entity.ConfirmationToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,6 +24,7 @@ import com.eventprogrammer.organizationservice.repository.OrganizationRepository
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -33,9 +40,12 @@ public class OrganizationService implements UserDetailsService {
     private ConfirmationTokenService confirmationTokenService;
     @Autowired
     private EmailSend emailSend;
+    @Autowired
+    private JwtService jwtService;
+    private AuthenticationManager authenticationManager;
 
     /*Metodo per creare una organizzazione */
-    public void createOrganization(OrganizationRequest organizationRequest) throws GenericErrorException {
+    public AuthenticationResponse createOrganization(OrganizationRequest organizationRequest) throws GenericErrorException {
 
         if (organizationRepository.findByEmail(organizationRequest.getEmail())!=null){
             throw new GenericErrorException("Esiste già un utente registrato con questa email", "O01");
@@ -55,6 +65,10 @@ public class OrganizationService implements UserDetailsService {
         organizationRepository.save(organization);
         log.info("L'organizzazione {} è stata registrata", organization.getOrganizationId());
 
+
+
+        //VIENE GENERATO UN TOKEN UTILIZZATO NELLA MAIL DI CONFERMA PER ABILITARE L'ACCOUNT
+        //VIENE CREATA E INVIATA LA MAIL
         String token = UUID.randomUUID().toString();
         ConfirmationToken confirmationToken = new ConfirmationToken(
                 token,
@@ -69,8 +83,17 @@ public class OrganizationService implements UserDetailsService {
         Email email = new Email(buildEmail(organization.getOrganizationName(),link), "Confirm your email");
         emailSend.send(organization.getEmail(), email);
 
+
+        //VIENE GENERATO IL TOKEN PER L'AUTENTICAZIONE
+        var jwtToken = jwtService.generateToken(organization);
+        return AuthenticationResponse.builder().accessToken(jwtToken).build();
     }
 
+
+
+    /*Questa funzione viene richiamata dall'organizzatore appena rigistrato per abilitare l'account
+      Il link per richiamare tale metodo è inviato per email.
+     */
     public String confirmToken(String token) {
         ConfirmationToken confirmationToken = confirmationTokenService.getToken(token);
 
@@ -89,6 +112,22 @@ public class OrganizationService implements UserDetailsService {
         organizationRepository.save(organization);
         return "confirmed";
     }
+
+
+    public AuthenticationResponse login(AuthenticationRequest authenticationRequest) throws GenericErrorException {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword())
+        );
+
+        var organization = organizationRepository.findByEmail(authenticationRequest.getEmail());
+        if (organization == null) {
+            throw new GenericErrorException("Organizzatore non registrato", "O03");
+        }
+
+        var jwtToken = jwtService.generateToken(organization);
+        return AuthenticationResponse.builder().accessToken(jwtToken).build();
+    }
+
 
 
     public Organization saveOrganization(Organization organization) {
@@ -114,46 +153,12 @@ public class OrganizationService implements UserDetailsService {
             throw new UsernameNotFoundException("Non esiste un utente con l'email specificata");
         }
 
-        return new UserDetails() {
-            @Override
-            public Collection<? extends GrantedAuthority> getAuthorities() {
-                return null;
-            }
+        return new User(organization.getEmail(), organization.getPassword(), new ArrayList<>());
 
-            @Override
-            public String getPassword() {
-                return organization.getPassword();
-            }
-
-            @Override
-            public String getUsername() {
-                return organization.getEmail();
-            }
-
-            @Override
-            public boolean isAccountNonExpired() {
-                return true;
-            }
-
-            @Override
-            public boolean isAccountNonLocked() {
-                return true;
-            }
-
-            @Override
-            public boolean isCredentialsNonExpired() {
-                return true;
-            }
-
-            @Override
-            public boolean isEnabled() {
-                return true;
-            }
-        };
     }
 
     private String buildEmail(String name, String link) {
-        return "Hi " + name + ". Thank you for registering!\nPlease click on the below link to activate your account: " +
-                link + "\nActivate Now. Link will expire in 15 minutes. \nSee you soon! \n\n EventEzy Team.";
+        return "Ciao " + name + ". Grazie per la registrazione!\nPer attivare il tuo account clicca qui: " +
+                link + "\nAttivalo ora. Il link scadrà in 15 minuti. \nCi vediamo presto! \n\n EventEzy Team.";
     }
 }

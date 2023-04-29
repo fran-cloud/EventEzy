@@ -4,18 +4,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.eventprogrammer.organizationservice.DTO.*;
+import com.eventprogrammer.organizationservice.Util.JwtService;
 import com.eventprogrammer.organizationservice.eccezioni.GenericErrorException;
 import com.eventprogrammer.organizationservice.entity.Event;
+import com.eventprogrammer.organizationservice.repository.OrganizationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import com.eventprogrammer.organizationservice.service.EventService;
 import com.eventprogrammer.organizationservice.service.OrganizationService;
-import com.eventprogrammer.organizationservice.DTO.EventRequest;
-import com.eventprogrammer.organizationservice.DTO.EventResponse;
-import com.eventprogrammer.organizationservice.DTO.OrganizationRequest;
 import com.eventprogrammer.organizationservice.entity.Organization;
 import com.eventprogrammer.organizationservice.entity.Reservation;
 
@@ -33,17 +36,27 @@ public class OrganizationController {
     @Autowired
     private OrganizationService organizationService;
     @Autowired
+    private OrganizationRepository organizationRepository;
+    @Autowired
     private EventService eventService;
+    @Autowired
+    private JwtService jwtService;
 
     @PostMapping("/create-organization")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createOrganization(@RequestBody OrganizationRequest organizationRequest ) throws GenericErrorException {
-        organizationService.createOrganization(organizationRequest);
+    public AuthenticationResponse createOrganization(@RequestBody OrganizationRequest organizationRequest ) throws GenericErrorException {
+        return organizationService.createOrganization(organizationRequest);
     }
 
-    @GetMapping(path = "/confirm")
+    @GetMapping("/confirm")
     public String confirm(@RequestParam("token") String token) {
         return organizationService.confirmToken(token);
+    }
+
+
+    @PostMapping("/login")
+    public AuthenticationResponse login(@RequestBody AuthenticationRequest authenticationRequest) throws GenericErrorException {
+        return login(authenticationRequest);
     }
 
 

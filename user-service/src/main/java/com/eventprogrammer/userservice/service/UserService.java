@@ -55,7 +55,7 @@ public class UserService implements UserDetailsService {
         .email(userRequest.getEmail())
         .dataNascita(userRequest.getDataNascita())
         .role("User")
-        .password(userRequest.getPassword())
+        .password(bCryptPasswordEncoder.encode(userRequest.getPassword()))
         .locked(false)
         .enabled(false)
         .build();

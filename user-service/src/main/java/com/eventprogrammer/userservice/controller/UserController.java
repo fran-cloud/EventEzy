@@ -24,7 +24,7 @@ import com.eventprogrammer.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@CrossOrigin(origins = {"http://localhost:80", "http://localhost:8080" })
+@CrossOrigin(origins = "http://localhost:8080")
 @RestController
 @RequestMapping("/users")
 @Slf4j

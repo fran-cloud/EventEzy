@@ -147,7 +147,7 @@ public class UserService implements UserDetailsService {
 
     private String buildEmail(String name, String link) {
         return "Ciao " + name + ". Grazie per la registrazione!\nPer attivare il tuo account clicca qui: " +
-                link + "\nAttivalo ora. Il link scadrà in 15 minuti. \nCi vediamo presto! \n\n EventEzy Team.";
+                link + "\nAttivalo ora. Il link scadrà in 15 minuti. \nCi vediamo presto! \n\nEventEzy Team.";
     }
     
 }

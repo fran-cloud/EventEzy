@@ -78,7 +78,7 @@ public class OrganizationService implements UserDetailsService {
 
         confirmationTokenService.saveConfirmationToken(confirmationToken);
 
-        String link = "http://localhost:9001/organizations/confirm?token=" + token;
+        String link = "http://localhost:8080/organizations/confirm?token=" + token;
         Email email = new Email(buildEmail(organization.getOrganizationName(),link), "Confirm your email");
         emailSend.send(organization.getEmail(), email);
 
@@ -156,6 +156,6 @@ public class OrganizationService implements UserDetailsService {
 
     private String buildEmail(String name, String link) {
         return "Ciao " + name + ". Grazie per la registrazione!\nPer attivare il tuo account clicca qui: " +
-                link + "\nAttivalo ora. Il link scadrà in 15 minuti. \nCi vediamo presto! \n\n EventEzy Team.";
+                link + "\nAttivalo ora. Il link scadrà in 15 minuti. \nCi vediamo presto! \n\nEventEzy Team.";
     }
 }

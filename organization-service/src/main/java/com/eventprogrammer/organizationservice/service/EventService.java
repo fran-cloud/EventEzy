@@ -175,14 +175,14 @@ public class EventService {
 
         if (cod==0){
             msg = "Ciao " + name + ",\nl'evento " + event.getNome() +" previsto per la data "
-            + event.getDataEoraDate() + " è stato cancellato."
+            + event.getDataEoraDate() + " è stato cancellato. "
                     + "Contatta l'organizzatore all'indirizzo " + event.getOrganizationEmail()
                     +" per saperne di più. \n\n EventEzy Team.";
         }
         if (cod==1){
             msg = "Ciao " + name + ",\nl'evento " + event.getNome() +" previsto per la data "
-                    + event.getDataEoraDate() + " ha subito delle modifiche che possono riguardare la data, l'ora," +
-                    "il luogo o altri dettagli. Controlla la tua area personale per prednere visione dei nuovi dettagli." +
+                    + event.getDataEoraDate() + " ha subito delle modifiche che possono riguardare la data, l'ora, " +
+                    "il luogo o altri dettagli. Controlla la tua area personale per prendere visione delle modifiche. " +
                     "Ricorda che in caso di problemi è sempre possibile eliminare la propria prenotazione. \n\n EventEzy Team.";
         }
         return msg;

@@ -5,16 +5,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.eventprogrammer.organizationservice.DTO.*;
-import com.eventprogrammer.organizationservice.Util.JwtService;
 import com.eventprogrammer.organizationservice.eccezioni.GenericErrorException;
 import com.eventprogrammer.organizationservice.entity.Event;
-import com.eventprogrammer.organizationservice.repository.OrganizationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import com.eventprogrammer.organizationservice.service.EventService;
@@ -52,7 +47,7 @@ public class OrganizationController {
 
     @PostMapping("/login")
     public AuthenticationResponse login(@RequestBody AuthenticationRequest authenticationRequest) throws GenericErrorException {
-        return login(authenticationRequest);
+        return organizationService.login(authenticationRequest);
     }
 
 

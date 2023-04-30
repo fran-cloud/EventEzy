@@ -9,7 +9,6 @@ import com.eventprogrammer.organizationservice.entity.ConfirmationToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -25,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.UUID;
 
 @Service
@@ -42,6 +40,7 @@ public class OrganizationService implements UserDetailsService {
     private EmailSend emailSend;
     @Autowired
     private JwtService jwtService;
+    @Autowired
     private AuthenticationManager authenticationManager;
 
     /*Metodo per creare una organizzazione */
@@ -126,7 +125,6 @@ public class OrganizationService implements UserDetailsService {
         var jwtToken = jwtService.generateToken(organization);
         return AuthenticationResponse.builder().accessToken(jwtToken).build();
     }
-
 
 
     public Organization saveOrganization(Organization organization) {

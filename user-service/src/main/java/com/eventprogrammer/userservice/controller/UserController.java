@@ -50,7 +50,7 @@ public class UserController {
 
     @PostMapping("/login")
     public AuthenticationResponse login(@RequestBody AuthenticationRequest authenticationRequest) throws GenericErrorException {
-        return login(authenticationRequest);
+        return userService.login(authenticationRequest);
     }
 
     @PostMapping("/save-user")

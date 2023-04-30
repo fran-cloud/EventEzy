@@ -38,6 +38,7 @@ public class UserService implements UserDetailsService {
     private EmailSend emailSend;
     @Autowired
     private JwtService jwtService;
+    @Autowired
     private AuthenticationManager authenticationManager;
 
     /*Metodo per creare un utente */

@@ -33,7 +33,7 @@ public class OrganizationController {
     @Autowired
     private EventService eventService;
 
-    @PostMapping("/create-organization")
+    @PostMapping("/registration")
     @ResponseStatus(HttpStatus.CREATED)
     public AuthenticationResponse createOrganization(@RequestBody OrganizationRequest organizationRequest ) throws GenericErrorException {
         return organizationService.createOrganization(organizationRequest);

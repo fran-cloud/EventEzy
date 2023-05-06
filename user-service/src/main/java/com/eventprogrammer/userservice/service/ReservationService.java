@@ -120,9 +120,9 @@ public class ReservationService {
     /*Con questo prelevo tutte le prenotazioni effettuate da un utente */
     public List<Reservation> getAllReservation(String userId){
 
-        User user = userRepository.findByUserId(userId);
+        //User user = userRepository.findByUserId(userId);
         //List<Reservation> reservations = reservationRepository.findByUtenteEmail(user.getEmail());
-        List<Reservation> reservations = reservationRepository.findByUtenteEmail(user.getEmail());
+        List<Reservation> reservations = reservationRepository.findByUtenteEmail(userId);
 
         return  reservations;
     }

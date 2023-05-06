@@ -78,9 +78,9 @@ public class EventService {
     /*Lo usiamo nel front-end: quando un organizzatore effettua il login vede tutti gli eventi che ha creato*/
     public List<EventResponse> getAllOrganizationEvent(String organizationId) {
 
-        Organization organization = organizationRepository.findByOrganizationId(organizationId);
-        String email= organization.getEmail();
-    	List<Event> events = eventRepository.findByOrganizationEmail(email);
+        //Organization organization = organizationRepository.findByOrganizationId(organizationId);
+        //String email= organization.getEmail();
+    	List<Event> events = eventRepository.findByOrganizationEmail(organizationId);
 
         return events.stream().map(this::mapToEventResponse).toList();
     }

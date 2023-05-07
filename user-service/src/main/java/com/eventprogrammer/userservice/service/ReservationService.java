@@ -37,9 +37,9 @@ public class ReservationService {
     /*Metodo per effettuare una prenotazione */
     public Reservation createReservation(ReservationRequest reservationRequest, String id) throws GenericErrorException {
 
-        User user = userRepository.findByUserId(id);
+        //User user = userRepository.findByUserId(id);
         //Controllo se è già presente una prenotazione per l'evento selezionato
-        List<Reservation> check = reservationRepository.findByUtenteEmail(user.getEmail());
+        List<Reservation> check = reservationRepository.findByUtenteEmail(id);
         for (int i=0; i<check.size(); i++) {
             if (check.get(i).getEventId().equals(reservationRequest.getEventId())) {
                 throw new GenericErrorException("È già stata effettuata una prenotazione per questo evento", "R01");
@@ -56,7 +56,7 @@ public class ReservationService {
             .eventAddress(event.getIndirizzo())
             .eventData(event.getDataEoraDate())
             .organizationEmail(event.getOrganizationEmail())
-            .utenteEmail(user.getEmail())
+            .utenteEmail(id)
             .build();  /* Build mi permette di salvare richiamando un costruttore senza inserire l'Id */
 
             event.setPostiDisponibili(event.getPostiDisponibili()-1);

@@ -44,15 +44,15 @@ public class EventService {
          .tipologia(eventRequest.getTipologia())
          .indirizzo(eventRequest.getIndirizzo())
          .dataEoraDate(eventRequest.getDataEoraDate())
-         .organizationEmail(organizationRepository.findByOrganizationId(id).getEmail())
+         .organizationEmail(id)
          .maxPrenotati(eventRequest.getMaxPrenotati())
          .postiDisponibili(eventRequest.getMaxPrenotati())
 
          .build();  /* Build mi permette di salvare richiamando un costruttore senza inserire l'Id */
 
-        Organization organization = organizationRepository.findByOrganizationId(id);
-        String email = organization.getEmail();
-        List<Event> events = eventRepository.findByOrganizationEmail(email);
+        //Organization organization = organizationRepository.findByOrganizationId(id);
+        //String email = organization.getEmail();
+        List<Event> events = eventRepository.findByOrganizationEmail(id);
         for (int i=0; i<events.size(); i++) {
             if (events.get(i).getNome().equals(eventRequest.getNome())) {
                 throw new GenericErrorException("È già stato creato un evento con questo nome", "E01");

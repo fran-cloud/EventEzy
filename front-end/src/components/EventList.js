@@ -10,21 +10,9 @@ const EventList = ({ evento }) => {
   const [eventId, setEventId] = useState(null);
   const [responseEvento, setResponseEvento] = useState(null);
 
-  const fetchData = () => {
-      fetch(USER_API_BASE_URL+'/'+encodeURIComponent(localStorage.getItem("utente")), {method: "GET", headers: {"Content-Type": "application/json", 'Authorization': `Bearer ${localStorage.getItem('token')}`,}})
-        .then(response => {
-          return response.json()
-        })
-        .then(data => {
-          setEventi(data)
-        })
-    }
+
 
     useEffect(() => {
-      fetchData()
-    }, [])
-
-    /*useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
@@ -43,7 +31,7 @@ const EventList = ({ evento }) => {
       setLoading(false);
     };
     fetchData();
-  }, [evento, responseEvento]);*/
+  }, [evento, responseEvento]);
 
   const eliminaEvento = (e, id) => {
     e.preventDefault();
@@ -64,7 +52,7 @@ const EventList = ({ evento }) => {
 
   const modificaEvento = async (e, id) => {
     e.preventDefault();
-    const response = await fetch(MODIFYEVENT_API_URL, {
+    const response = await fetch(MODIFYEVENT_API_URL+'/'+id, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -79,9 +67,8 @@ const EventList = ({ evento }) => {
   return (
     <>
     <br/>
-      <div className="container mx-auto my-8">
         <div className="flex shadow border-b">
-          <table className="min-w-full">
+          <table className="table">
             <thead className="bg-transparent">
               <tr>
                 <th className="text-left font-medium text-gray-500 uppercase tracking-wide py-3 px-6"> Nome</th>
@@ -95,7 +82,7 @@ const EventList = ({ evento }) => {
             </thead>
             {!loading && (
               <tbody className="bg-white">
-                {eventi.map((evento)  => (     // //Object.entries(eventi).map((evento)
+                {eventi?.map((evento)  => (     // //Object.entries(eventi).map((evento)
                   <Evento
                     evento={evento}
                     key={evento.eventId}
@@ -107,7 +94,6 @@ const EventList = ({ evento }) => {
             )}
           </table>
         </div>
-      </div>
       
     </>
 

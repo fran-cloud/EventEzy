@@ -1,4 +1,3 @@
-import CreaEvento from './CreaEvento'
 import NavBarOrg from './NavBarOrg'
 
 const HomeOrganizzatore = () =>  {
@@ -6,7 +5,7 @@ const HomeOrganizzatore = () =>  {
     <>
       <NavBarOrg />
       <main>
-        <CreaEvento />
+
       </main>
     </>
   )

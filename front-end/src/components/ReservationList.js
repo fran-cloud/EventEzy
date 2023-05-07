@@ -87,9 +87,9 @@ const ReservationList = () => {
         </div>
       </nav>
       <br/>
-        <div className="container mx-auto my-8">
+
           <div className="flex shadow border-b">
-            <table className="min-w-full">
+            <table className="table">
               <thead className="bg-transparent">
                 <tr>
                   <th className="text-left font-medium text-gray-500 uppercase tracking-wide py-3 px-6"> Id</th>
@@ -113,7 +113,6 @@ const ReservationList = () => {
               )}
             </table>
           </div>
-        </div>
 
       </>
     );

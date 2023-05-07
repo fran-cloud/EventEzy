@@ -8,6 +8,8 @@ function NavBarOrg() {
 
 const navigate = useNavigate()
 
+const CERCA_EVENTO = "http://localhost:8080/users/searchEvent";
+
 const logout = (e) =>{
     localStorage.removeItem('token');
     localStorage.removeItem('utente');

@@ -1,9 +1,9 @@
 import { React, useState, useEffect, Fragment } from "react";
 import EventoUser from "./EventoUser";
 
-const EventList = ({ evento }) => {
+const EventList = () => {
   const USER_API_BASE_URL = "http://localhost:8080/users/getAllEvents";
-  const EFFETTUA_PRENOTAZIONE = "http://localhost:8080/users/create-reservation"
+  const EFFETTUA_PRENOTAZIONE = "http://localhost:8080/users/create-reservation";
   const [eventi, setEventi] = useState(null);
   const [loading, setLoading] = useState(true);
   const [eventId, setEventId] = useState(null);
@@ -17,26 +17,23 @@ const EventList = ({ evento }) => {
     organizationEmail: "",
     utenteEmail: "",
   });
+  const [evento, setEvento] = useState({
+    eventId: "",
+    nome: "",
+    tipologia: "",
+    indirizzo: "",
+    dataEoraDate: "",
+    organizationEmail: "",
+    maxPrenotati: "",
+    postiDisponibili: "",
+  });
 
-  const fetchData = () => {
-        fetch(USER_API_BASE_URL+'/'+encodeURIComponent(localStorage.getItem("utente")), {method: "GET", headers: {"Content-Type": "application/json", 'Authorization': `Bearer ${localStorage.getItem('token')}`,}})
-          .then(response => {
-            return response.json()
-          })
-          .then(data => {
-            setEventi(data)
-          })
-      }
 
-      useEffect(() => {
-        fetchData()
-      }, [])
-
-    /*useEffect(() => {
+    useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await fetch(USER_API_BASE_URL+'/'+encodeURIComponent(localStorage.getItem("utente")), {
+        const response = await fetch(USER_API_BASE_URL, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -51,11 +48,11 @@ const EventList = ({ evento }) => {
       setLoading(false);
     };
     fetchData();
-  }, [evento, responseEvento]);*/
+  }, [evento, responseEvento]);
 
   const effettuaPrenotazione = async (e) => {
     e.preventDefault();
-    const response = await fetch(EFFETTUA_PRENOTAZIONE + "/" + encodeURIComponent(localStorage.getItem("utente")), {
+    const response = await fetch(EFFETTUA_PRENOTAZIONE + "/" + localStorage.getItem("utente"), {
       method: "POST",
       headers: {
       "Content-Type": "application/json",
@@ -70,19 +67,18 @@ const EventList = ({ evento }) => {
   return (
     <>
     <br/>
-
+    <div className="container">
     {!loading && (
       <tbody className="bg-white">
       {eventi?.map((evento)  => (     // //Object.entries(eventi).map((evento)
         <EventoUser
          evento={evento}
          key={evento.eventId}
-         effettuaPrenotazione={effettuaPrenotazione}
         />
       ))}
       </tbody>
     )}
-
+    </div>
     </>
 
   );

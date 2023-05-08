@@ -19,13 +19,13 @@ const Evento = ({evento, eliminaEvento, modificaEvento}) => {
       utenteEmail: "",
     });
     const [prenotazioni, setPrenotazioni] = useState(null);
-    const [eventRequest, setEventRequest] = useState({
-      nome: "",
-      tipologia: "",
+    const [responsePrenotazione, setResponsePrenotazione] = useState(null);
+    const [eventRequest, setEventRequest] = useState(evento);
+/*      tipologia: "",
       indirizzo: "",
       dataEoraDate: "",
       maxPrenotati: "",
-    });
+    });*/
 
     //Variabili per gestire la modal del tasto Elimina
     const [show, setShow] = useState(false);
@@ -61,11 +61,11 @@ const Evento = ({evento, eliminaEvento, modificaEvento}) => {
         setLoading(false);
       };
       fetchData();
-    }, [prenotazioni, prenotazione]);
+    }, [prenotazione, responsePrenotazione]);
 
     const handleChange = (event) => {
       const value = event.target.value;
-      setEventRequest({ ...evento, [event.target.name]: value });
+      setEventRequest({ ...eventRequest, [event.target.name]: value });
     };
 
 
@@ -114,9 +114,7 @@ const Evento = ({evento, eliminaEvento, modificaEvento}) => {
         </Modal.Header>
 
         <Modal.Body>
-          <div className="container mx-auto my-8">
-            <div className="flex shadow border-b">
-              <table className="min-w-full">
+              <table className="table">
                 <thead className="bg-transparent">
                   <tr>
                     <th className="text-left font-medium text-gray-500 uppercase tracking-wide py-3 px-6"> Id</th>
@@ -128,14 +126,12 @@ const Evento = ({evento, eliminaEvento, modificaEvento}) => {
                     {prenotazioni?.map((prenotazione)  => (     // //Object.entries(eventi).map((evento)
                       <Prenotazione
                         prenotazione={prenotazione}
-                        key={prenotazione.reservationIdId}
+                        key={prenotazione.reservationId}
                       />
                     ))}
                   </tbody>
                 )}
               </table>
-            </div>
-          </div>
         </Modal.Body>
 
         <Modal.Footer>
@@ -161,8 +157,8 @@ const Evento = ({evento, eliminaEvento, modificaEvento}) => {
               className="form-control"
               onChange={(e) => handleChange(e)}
               name="nome"
-              value={evento.nome}
-              placeholder={evento.nome} />
+              value={eventRequest.nome}
+              placeholder="Nome" />
             <br/>
             <input
               required
@@ -170,7 +166,7 @@ const Evento = ({evento, eliminaEvento, modificaEvento}) => {
               className="form-control"
               onChange={(e) => handleChange(e)}
               name="tipologia"
-              value={evento.tipologia}
+              value={eventRequest.tipologia}
               placeholder={evento.tipologia} />
             <br/>
             <input
@@ -179,7 +175,7 @@ const Evento = ({evento, eliminaEvento, modificaEvento}) => {
               className="form-control"
               onChange={(e) => handleChange(e)}
               name="indirizzo"
-              value={evento.indirizzo}
+              value={eventRequest.indirizzo}
               placeholder={evento.indirizzo} />
             <br/>
             <input
@@ -188,7 +184,7 @@ const Evento = ({evento, eliminaEvento, modificaEvento}) => {
               className="form-control"
               onChange={(e) => handleChange(e)}
               name="dataEoraDate"
-              value={evento.dataEoraDate}
+              value={eventRequest.dataEoraDate}
               placeholder={evento.dataEoraDate} />
             <br/>
             <input
@@ -197,7 +193,7 @@ const Evento = ({evento, eliminaEvento, modificaEvento}) => {
               className="form-control"
               onChange={(e) => handleChange(e)}
               name="maxPrenotati"
-              value={evento.maxPrenotati}
+              value={eventRequest.maxPrenotati}
               placeholder={evento.maxPrenotati} />
         </Modal.Body>
 

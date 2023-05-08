@@ -33,7 +33,14 @@ return (
             <li className="nav-item">
               <a className="nav-link" href="../prenotazioniUser">Prenotazioni Effettuate</a>
             </li>
+            <li className="nav-item">
+              <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Cerca Evento" aria-label="Search"></input>
+                <button class="btn btn-outline-success" type="submit">Cerca</button>
+              </form>
+            </li>
           </ul>
+
           <form className="d-flex">
             <Button variant="danger" onClick={logout}>Logout</Button>
           </form>

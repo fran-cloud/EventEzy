@@ -13,16 +13,19 @@ const [prenotazione, setPrenotazione] = useState({
     organizationEmail: "",
     utenteEmail: "",
   });
+const [prenotazioneRequest, setPrenotazioneRequest]= useState({
+    eventId: evento.eventId,
+});
 
   const effettuaPrenotazione = async (e) => {
     e.preventDefault();
     const response = await fetch(EFFETTUA_PRENOTAZIONE + "/" + localStorage.getItem("utente"), {
       method: "POST",
       headers: {
-      "Content-Type": "application/json",
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        "Content-Type": "application/json",
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
       },
-      body: JSON.stringify(evento.eventId),
+      body: JSON.stringify(prenotazioneRequest),
     });
     const _prenotazione = await response.json();
     setPrenotazione(_prenotazione);

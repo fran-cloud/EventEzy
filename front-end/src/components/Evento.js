@@ -3,11 +3,16 @@ import Modal from 'react-bootstrap/Modal';
 import React, { useState, useEffect } from 'react';
 import Form from 'react-bootstrap/Form';
 import Prenotazione from './Prenotazione';
+import { useNavigate } from "react-router-dom";
 
-const Evento = ({evento, eliminaEvento, modificaEvento}) => {
+const Evento = ({evento, eliminaEvento}) => {
 
+    const navigate = useNavigate();
+
+    const MODIFYEVENT_API_URL = "http://localhost:8080/organizations/modify-event";
     const GET_RESERATION_API = "http://localhost:8080/organizations/get-all-reservations";
     const [loading, setLoading] = useState(true);
+    const [responseEvento, setResponseEvento] = useState(null);
     const [prenotazioneId, setPrenotazioneId] = useState(null);
     const [prenotazione, setPrenotazione] = useState({
       reservationId: "",
@@ -21,12 +26,6 @@ const Evento = ({evento, eliminaEvento, modificaEvento}) => {
     const [prenotazioni, setPrenotazioni] = useState(null);
     const [responsePrenotazione, setResponsePrenotazione] = useState(null);
     const [eventRequest, setEventRequest] = useState(evento);
-/*      tipologia: "",
-      indirizzo: "",
-      dataEoraDate: "",
-      maxPrenotati: "",
-    });*/
-
     //Variabili per gestire la modal del tasto Elimina
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
@@ -65,8 +64,23 @@ const Evento = ({evento, eliminaEvento, modificaEvento}) => {
 
     const handleChange = (event) => {
       const value = event.target.value;
-      setEventRequest({ ...eventRequest, [event.target.name]: value });
+      setEventRequest({...eventRequest, [event.target.name]: value });
     };
+
+  const modificaEvento = async (e, id) => {
+    e.preventDefault();
+    const response = await fetch(MODIFYEVENT_API_URL+'/'+id, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+      body: JSON.stringify(eventRequest),
+    });
+    const _evento = await response.json();
+    setResponseEvento(_evento);
+    //navigate("../homeUser");
+  };
 
 
     return (

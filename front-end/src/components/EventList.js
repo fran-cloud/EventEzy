@@ -50,20 +50,6 @@ const EventList = ({ evento }) => {
   };
 
 
-  const modificaEvento = async (e, id) => {
-    e.preventDefault();
-    const response = await fetch(MODIFYEVENT_API_URL+'/'+id, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      },
-      body: JSON.stringify(evento),
-    });
-    const _evento = await response.json();
-    setResponseEvento(_evento);
-  };
-
   return (
     <>
     <br/>
@@ -87,7 +73,6 @@ const EventList = ({ evento }) => {
                     evento={evento}
                     key={evento.eventId}
                     eliminaEvento={eliminaEvento}
-                    modificaEvento={modificaEvento}
                   />
                 ))}
               </tbody>

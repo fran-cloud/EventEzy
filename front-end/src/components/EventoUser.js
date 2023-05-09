@@ -35,8 +35,12 @@ const [prenotazioneRequest, setPrenotazioneRequest]= useState({
 
     return (
   <>
-  <div className="col">
-  <div className="card">
+  <div className="card" style={{width:"35rem"}}>
+  <div class="row g-0">
+      <div class="col-md-4">
+        <img src="https://brescia.unicusano.it/wp-content/uploads/2021/10/consigli-per-iniziare-una-carriera-come-organizzatore-di-eventi-min.jpg" class="img-fluid rounded-start"></img>
+      </div>
+    <div class="col-md-8">
     <div className="card-body">
       <h5 className="card-title">{evento.nome}</h5>
       <h6 className="card-subtitle mb-2 text-body-secondary">Tipologia: {evento.tipologia}</h6>
@@ -45,6 +49,7 @@ const [prenotazioneRequest, setPrenotazioneRequest]= useState({
       <p className="card-text">Posti disponibili: {evento.postiDisponibili}</p>
       <Button variant="outline-success" onClick={effettuaPrenotazione}>Prenota</Button>
     </div>
+  </div>
   </div>
   </div>
   <br/>

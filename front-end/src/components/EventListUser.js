@@ -50,19 +50,6 @@ const EventList = () => {
     fetchData();
   }, [evento, responseEvento]);
 
-  const effettuaPrenotazione = async (e) => {
-    e.preventDefault();
-    const response = await fetch(EFFETTUA_PRENOTAZIONE + "/" + localStorage.getItem("utente"), {
-      method: "POST",
-      headers: {
-      "Content-Type": "application/json",
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      },
-      body: JSON.stringify(evento.eventId),
-    });
-    const _prenotazione = await response.json();
-    setPrenotazione(_prenotazione);
-  };
 
   return (
     <>

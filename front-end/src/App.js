@@ -9,6 +9,7 @@ import RegistrazioneUser from './components/RegistrazioneUser';
 import HomeOrg from './components/HomeOrg';
 import HomeUser from './components/HomeUser';
 import ReservationList from './components/ReservationList';
+import SearchResult from './components/SearchResult';
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
           <Route path="/homeOrg" element={<HomeOrg/>}></Route>
           <Route path="/homeUser" element={<HomeUser/>}></Route>
           <Route path="/prenotazioniUser" element={<ReservationList/>}></Route>
+          <Route path="/searchResult" element={<SearchResult/>}></Route>
         </Routes>
     </BrowserRouter>
     </>

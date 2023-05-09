@@ -1,14 +1,14 @@
-import React from 'react'
 import {Navbar, Container, Nav} from "react-bootstrap"
 import { useNavigate } from "react-router-dom";
 import Button from 'react-bootstrap/Button';
+import SearchResult from './SearchResult';
+import React, { useState } from "react";
 
 
-function NavBarOrg() {
+function NavBarUser() {
 
 const navigate = useNavigate()
 
-const CERCA_EVENTO = "http://localhost:8080/users/searchEvent";
 
 const logout = (e) =>{
     localStorage.removeItem('token');
@@ -34,9 +34,8 @@ return (
               <a className="nav-link" href="../prenotazioniUser">Prenotazioni Effettuate</a>
             </li>
             <li className="nav-item">
-              <form class="d-flex" role="search">
-                <input class="form-control me-2" type="search" placeholder="Cerca Evento" aria-label="Search"></input>
-                <button class="btn btn-outline-success" type="submit">Cerca</button>
+              <form class="d-flex">
+                <a className="nav-link" href="../searchResult">Cerca evento</a>
               </form>
             </li>
           </ul>
@@ -52,4 +51,4 @@ return (
   );
 }
 
-export default NavBarOrg;
+export default NavBarUser;

@@ -10,6 +10,7 @@ import HomeOrg from './components/HomeOrg';
 import HomeUser from './components/HomeUser';
 import ReservationList from './components/ReservationList';
 import SearchResult from './components/SearchResult';
+import OKREG from './components/OKREG';
 
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
           <Route path="/homeUser" element={<HomeUser/>}></Route>
           <Route path="/prenotazioniUser" element={<ReservationList/>}></Route>
           <Route path="/searchResult" element={<SearchResult/>}></Route>
+          <Route path="/okreg" element={<OKREG/>}></Route>
         </Routes>
     </BrowserRouter>
     </>

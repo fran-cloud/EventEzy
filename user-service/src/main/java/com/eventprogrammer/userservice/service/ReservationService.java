@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.eventprogrammer.userservice.DTO.Email;
 import com.eventprogrammer.userservice.eccezioni.GenericErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,8 @@ public class ReservationService {
     private EventRepository eventRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private EmailSend emailSend;
 
     /*Metodo per effettuare una prenotazione */
     public Reservation createReservation(ReservationRequest reservationRequest, String id) throws GenericErrorException {
@@ -63,6 +66,7 @@ public class ReservationService {
             eventRepository.save(event);
 
             reservationRepository.save(reservation);
+            Email email = new Email(buildEmail(id, event), "Riepilogo prenotazione");
 
             log.info("La prenotazione {} è stata salvata", reservation.getReservationId());
             return reservation;
@@ -143,6 +147,17 @@ public class ReservationService {
         Event event = new Event();
         event = eventRepository.findById(id).get();
         return event;
+    }
+
+
+    private String buildEmail(String name, Event event) {
+        String msg = new String();
+
+        msg = "Ciao " + name + ",\nti sei prenotato con successo per l'evento "+ event.getNome() +
+                " che si terrà il giorno: "+ event.getDataEoraDate()+ " presso " + event.getIndirizzo() +
+                "\nPer maggiori dettagli visita la tua area personale su EventEzy.\n\nEventEzy Team.";
+
+        return msg;
     }
 
 }

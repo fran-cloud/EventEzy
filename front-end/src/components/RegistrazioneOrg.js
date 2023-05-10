@@ -5,6 +5,7 @@ import Form from 'react-bootstrap/Form';
 import {
   Hero,
 } from "react-landing-page";
+import Alert from 'react-bootstrap/Alert';
 
 
 const RegistrazioneOrg = () =>{
@@ -25,7 +26,7 @@ const handleChange = (e) => {
     setUtente({...utente, [e.target.name]: value});
 };
 
-
+const [isOpen, setIsOpen] = useState(false);
 
 const salvaOrganizzazione = async (e) => {
     e.preventDefault();
@@ -40,7 +41,15 @@ const salvaOrganizzazione = async (e) => {
     localStorage.setItem('token', token.access_token);
     localStorage.setItem('utente', utente.email);
     console.log("Ho salvato il token ");
-    navigate("../homeOrg");
+
+    if(token.access_token!=null){
+        navigate("../okreg");
+    }
+    else{
+        navigate("../registrazioneOrg");
+        setIsOpen(true);
+    }
+
 }
 
 
@@ -54,6 +63,17 @@ return(
       bg="black"
       bgOpacity={0.5}
     >
+
+    <Alert variant="danger" show={isOpen}>
+      <Alert.Heading>Qualcosa non va</Alert.Heading>
+      <p>
+        Controlla che i dati inseriti siano corretti. Ti ricordiamo che: <br/> 1. Occorre necessariamente inserire tutti i campi <br/>
+        2. L'email deve essere valida <br/> 3. La partita IVA deve essere valida <br/>
+        4. La password deve essere almeno di 8 caratteri e contenere almeno una cifra e un carattere
+        speciale <br/> 5. Devi accettare termini e condizioni spuntando la casella in basso
+      </p>
+    </Alert>
+
 
     <div className="min-h-screen flex flex-col">
       <div className="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">

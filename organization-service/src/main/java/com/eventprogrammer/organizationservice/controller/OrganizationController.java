@@ -20,6 +20,8 @@ import com.eventprogrammer.organizationservice.entity.Reservation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.validation.Valid;
+
 
 @RestController
 @CrossOrigin(origins = "http://localhost:8080")
@@ -35,7 +37,7 @@ public class OrganizationController {
 
     @PostMapping("/registration")
     @ResponseStatus(HttpStatus.CREATED)
-    public AuthenticationResponse createOrganization(@RequestBody OrganizationRequest organizationRequest ) throws GenericErrorException {
+    public AuthenticationResponse createOrganization(@Valid @RequestBody OrganizationRequest organizationRequest ) throws GenericErrorException {
         return organizationService.createOrganization(organizationRequest);
     }
 
@@ -81,13 +83,13 @@ public class OrganizationController {
 
     @PostMapping("/create-event/{id}")
     @ResponseStatus(HttpStatus.CREATED)
-    public Event createEvent(@RequestBody EventRequest eventRequest, @PathVariable("id") String id) throws GenericErrorException{
+    public Event createEvent(@Valid @RequestBody EventRequest eventRequest, @PathVariable("id") String id) throws GenericErrorException{
         return eventService.createEvent(eventRequest, id);
         
     }
 
     @PostMapping("/modify-event/{id}")
-    public Event modifyEvent(@PathVariable("id") String id, @RequestBody EventRequest eventRequest ){
+    public Event modifyEvent(@PathVariable("id") String id,@Valid @RequestBody EventRequest eventRequest ){
         return eventService.modifyEvent(id, eventRequest);
 
     }

@@ -4,6 +4,7 @@ import {
   Hero,
 } from "react-landing-page";
 import Button from 'react-bootstrap/Button';
+import Alert from 'react-bootstrap/Alert';
 
 const LoginUser = () => {
 
@@ -23,6 +24,8 @@ const LoginUser = () => {
         setUtente({...utente, [e.target.name]: value});
     };
 
+    const [isOpen, setIsOpen] = useState(false);
+
     const loginUtente = async (e) => {
             e.preventDefault();
             const response = await fetch("http://localhost:8080/users/login", {
@@ -39,6 +42,10 @@ const LoginUser = () => {
             if(token.access_token!=null){
                 navigate("../homeUser");
             }
+            else{
+                navigate("../loginUser");
+                setIsOpen(true);
+            }
         }
     
     return (
@@ -50,6 +57,10 @@ const LoginUser = () => {
           bg="black"
           bgOpacity={0.5}
         >
+
+        <Alert variant="danger" show={isOpen}>
+          Email o password non valide
+        </Alert>
 
       <div className="min-h-screen flex flex-col">
               <div className="container max-w-sm mx-auto flex-1 flex flex-col items-center justify-center px-2">

@@ -24,6 +24,8 @@ import com.eventprogrammer.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.validation.Valid;
+
 @CrossOrigin(origins = "http://localhost:8080")
 @RestController
 @RequestMapping("/users")
@@ -38,7 +40,7 @@ public class UserController {
 
     @PostMapping("/create-user")
     @ResponseStatus(HttpStatus.CREATED)
-    public AuthenticationResponse createUser(@RequestBody UserRequest userRequest ) throws GenericErrorException {
+    public AuthenticationResponse createUser(@Valid @RequestBody UserRequest userRequest ) throws GenericErrorException {
         return userService.createUser(userRequest);
     }
 

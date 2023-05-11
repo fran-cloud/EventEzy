@@ -77,7 +77,7 @@ public class UserService implements UserDetailsService {
         confirmationTokenService.saveConfirmationToken(confirmationToken);
 
         String link = "http://localhost:9002/users/confirm?token=" + token;
-        Email email = new Email(buildEmail(user.getNome(),link), "Confirm your email");
+        Email email = new Email(buildEmail(user.getNome(),link), "Conferma email");
         emailSend.send(user.getEmail(), email);
 
 

@@ -22,7 +22,7 @@ const PrenotazioneUser = ({prenotazione, eliminaPrenotazione}) => {
         <div className="text-sm text-gray-500"> {prenotazione.eventAddress}</div>
       </td>
       <td className="text-left px-6 py-4 whitespace-nowrap">
-        <div className="text-sm text-gray-500"> {prenotazione.eventData}</div>
+        <div className="text-sm text-gray-500"> {prenotazione.eventData.replace('T', ' - ').replace(':00.000+00:00','')}</div>
       </td>
       <td className="text-left px-12 py-4 whitespace-nowrap">
         <div className="text-sm text-gray-500"> {prenotazione.organizationEmail}</div>

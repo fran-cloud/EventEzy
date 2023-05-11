@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import EventList from './EventList';
+import Alert from 'react-bootstrap/Alert';
 
 
 function NavBarOrg() {
@@ -12,6 +13,7 @@ const navigate = useNavigate()
 
   const USER_API_BASE_URL = "http://localhost:8080/organizations/create-event";
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpenValid, setIsOpenValid] = useState(false);
   const [evento, setEvento] = useState({
     eventId: "",
     nome: "",
@@ -66,6 +68,9 @@ const logout = (e) =>{
     const _evento = await response.json();
     setResponseEvento(_evento);
     reset(e);
+    if(_evento.status==400){
+        setIsOpenValid(true);
+    }
   };
 
   const reset = (e) => {
@@ -107,6 +112,16 @@ return (
       </div>
     </nav>
 
+    <Alert variant="danger" onClose={() => setIsOpenValid(false)} show={isOpenValid} dismissible>
+      <Alert.Heading>Qualcosa non va!</Alert.Heading>
+        <p>
+          I dati inseriti non sono validi. Ti ricordiamo che: <br/>
+          1. Non si possono lasciare campi vuoti <br/>
+          2. La data deve corrispondere ad un giorno futuro <br/>
+          3. Il numero di posti disponibili deve essere almeno pari a 1 <br/>
+          Se il problema persiste contatta il team di EventEzy all'indirizzo eventezy@libero.it
+        </p>
+    </Alert>
 
     <div
       className="modal show"

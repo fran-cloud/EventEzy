@@ -79,7 +79,7 @@ public class OrganizationService implements UserDetailsService {
         confirmationTokenService.saveConfirmationToken(confirmationToken);
 
         String link = "http://localhost:8080/organizations/confirm?token=" + token;
-        Email email = new Email(buildEmail(organization.getOrganizationName(),link), "Confirm your email");
+        Email email = new Email(buildEmail(organization.getOrganizationName(),link), "Conferma email");
         emailSend.send(organization.getEmail(), email);
 
 

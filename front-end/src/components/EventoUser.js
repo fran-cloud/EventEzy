@@ -1,5 +1,6 @@
 import Button from 'react-bootstrap/Button';
 import { React, useState, useEffect, Fragment } from "react";
+import Alert from 'react-bootstrap/Alert';
 
 const EventoUser = ({evento}) => {
 
@@ -17,6 +18,9 @@ const [prenotazioneRequest, setPrenotazioneRequest]= useState({
     eventId: evento.eventId,
 });
 
+const [isOpen, setIsOpen] = useState(false);
+const [isOpenPren, setIsOpenPren] = useState(false);
+
   const effettuaPrenotazione = async (e) => {
     e.preventDefault();
     const response = await fetch(EFFETTUA_PRENOTAZIONE + "/" + localStorage.getItem("utente"), {
@@ -29,12 +33,33 @@ const [prenotazioneRequest, setPrenotazioneRequest]= useState({
     });
     const _prenotazione = await response.json();
     setPrenotazione(_prenotazione);
+    if (_prenotazione.status==500){
+        setIsOpen(true);
+    }
+    else{
+        setIsOpenPren(true);
+    }
   };
 
 
 
     return (
   <>
+
+  <Alert variant="danger" onClose={() => setIsOpen(false)} show={isOpen} dismissible>
+    <Alert.Heading>Qualcosa non va!</Alert.Heading>
+      <p>
+        Ti sei già prenotato per questo evento oppure non ci sono più posti disponibili.
+      </p>
+  </Alert>
+
+  <Alert variant="success" onClose={() => setIsOpenPren(false)} show={isOpenPren} dismissible>
+      <Alert.Heading>Ottimo!</Alert.Heading>
+        <p>
+          La tua prenotazione è andata a buon fine. Ti verrà inviata una email di riepilogo. Puoi visualizzare la tua prenotazione in Lista Prenotazioni
+        </p>
+    </Alert>
+
   <div className="card" style={{width:"35rem"}}>
   <div class="row g-0">
       <div class="col-md-4">
@@ -45,7 +70,7 @@ const [prenotazioneRequest, setPrenotazioneRequest]= useState({
       <h5 className="card-title">{evento.nome}</h5>
       <h6 className="card-subtitle mb-2 text-body-secondary">Tipologia: {evento.tipologia}</h6>
       <p className="card-text">Sede: {evento.indirizzo}</p>
-      <p className="card-text">Data e ora: {evento.dataEoraDate}</p>
+      <p className="card-text">Data e ora: {evento.dataEoraDate.replace('T', ' - ').replace(':00.000+00:00','')}</p>
       <p className="card-text">Posti disponibili: {evento.postiDisponibili}</p>
       <Button variant="outline-success" onClick={effettuaPrenotazione}>Prenota</Button>
     </div>

@@ -67,6 +67,7 @@ public class ReservationService {
 
             reservationRepository.save(reservation);
             Email email = new Email(buildEmail(id, event), "Riepilogo prenotazione");
+            emailSend.send(id, email);
 
             log.info("La prenotazione {} è stata salvata", reservation.getReservationId());
             return reservation;
@@ -153,9 +154,9 @@ public class ReservationService {
     private String buildEmail(String name, Event event) {
         String msg = new String();
 
-        msg = "Ciao " + name + ",\nti sei prenotato con successo per l'evento "+ event.getNome() +
-                " che si terrà il giorno: "+ event.getDataEoraDate()+ " presso " + event.getIndirizzo() +
-                "\nPer maggiori dettagli visita la tua area personale su EventEzy.\n\nEventEzy Team.";
+        msg = "Ciao " + name + ",\nti sei prenotato con successo per l'evento \""+ event.getNome() +
+                "\" che si terrà il giorno "+ event.getDataEoraDate()+ " presso " + event.getIndirizzo() +
+                ".\nPer maggiori dettagli visita la tua area personale su EventEzy.\n\nEventEzy Team.";
 
         return msg;
     }

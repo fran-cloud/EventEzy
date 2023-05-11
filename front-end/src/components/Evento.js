@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Form from 'react-bootstrap/Form';
 import Prenotazione from './Prenotazione';
 import { useNavigate } from "react-router-dom";
+import Alert from 'react-bootstrap/Alert';
 
 const Evento = ({evento, eliminaEvento}) => {
 
@@ -40,6 +41,8 @@ const Evento = ({evento, eliminaEvento}) => {
     const [showPren, setShowPren] = useState(false);
     const handleClosePren = () => setShowPren(false);
     const handleShowPren = () => setShowPren(true);
+
+    const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
       const fetchData = async () => {
@@ -79,7 +82,9 @@ const Evento = ({evento, eliminaEvento}) => {
     });
     const _evento = await response.json();
     setResponseEvento(_evento);
-    //navigate("../homeUser");
+    if(_evento.status==400){
+        setIsOpen(true);
+    }
   };
 
 
@@ -98,7 +103,7 @@ const Evento = ({evento, eliminaEvento}) => {
         <div className="text-sm text-gray-500"> {evento.indirizzo}</div>
       </td>
       <td className="text-left px-12 py-4 whitespace-nowrap">
-        <div className="text-sm text-gray-500"> {evento.dataEoraDate}</div>
+        <div className="text-sm text-gray-500"> {evento.dataEoraDate.replace('T', ' - ').replace(':00.000+00:00','')}</div>
       </td>
       <td className="text-left px-6 py-4 whitespace-nowrap">
         <div className="text-sm text-gray-500"> {evento.postiDisponibili}</div>
@@ -124,7 +129,7 @@ const Evento = ({evento, eliminaEvento}) => {
     >
       <Modal show={showPren}>
         <Modal.Header>
-          <Modal.Title>Visualizza Prenotazioni</Modal.Title>
+          <Modal.Title>Prenotazioni per {evento.nome}</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
@@ -165,6 +170,16 @@ const Evento = ({evento, eliminaEvento}) => {
         </Modal.Header>
 
         <Modal.Body>
+            <Alert variant="danger" onClose={() => setIsOpen(false)} show={isOpen} dismissible>
+              <Alert.Heading>Qualcosa non va!</Alert.Heading>
+                <p>
+                  I dati inseriti non sono validi. Ti ricordiamo che: <br/>
+                  1. Non si possono lasciare campi vuoti <br/>
+                  2. La data deve corrispondere ad un giorno futuro <br/>
+                  3. Il numero di posti disponibili deve essere almeno pari a 1 <br/>
+                  Se il problema persiste contatta il team di EventEzy all'indirizzo eventezy@libero.it
+                </p>
+            </Alert>
             <input
               required
               type="text"
@@ -229,7 +244,7 @@ const Evento = ({evento, eliminaEvento}) => {
         </Modal.Header>
 
         <Modal.Body>
-          <p>Sicuro di voler eliminare questo evento?</p>
+          <p>Sicuro di voler eliminare l'evento "{evento.nome}"?</p>
         </Modal.Body>
 
         <Modal.Footer>

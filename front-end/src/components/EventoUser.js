@@ -60,7 +60,7 @@ const [isOpenPren, setIsOpenPren] = useState(false);
         </p>
     </Alert>
 
-  <div className="card" style={{width:"35rem"}}>
+  <div className="card" style={{width:"100%", margin: "10px"}}>
   <div class="row g-0">
       <div class="col-md-4">
         <img src="https://brescia.unicusano.it/wp-content/uploads/2021/10/consigli-per-iniziare-una-carriera-come-organizzatore-di-eventi-min.jpg" class="img-fluid rounded-start"></img>

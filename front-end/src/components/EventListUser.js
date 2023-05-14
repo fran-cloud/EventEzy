@@ -55,16 +55,20 @@ const EventList = () => {
     <>
     <br/>
     <div className="container">
+    <div className="row">
     {!loading && (
       <tbody className="bg-white">
-      {eventi?.map((evento)  => (     // //Object.entries(eventi).map((evento)
+      {eventi?.map((evento)  => (
+        <div className="col">
         <EventoUser
          evento={evento}
          key={evento.eventId}
         />
+        </div>
       ))}
       </tbody>
     )}
+    </div>
     </div>
     </>
 

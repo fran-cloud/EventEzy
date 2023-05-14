@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.eventprogrammer.organizationservice.OrganizationServiceApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.947 s - in com.eventprogrammer.organizationservice.OrganizationServiceApplicationTests

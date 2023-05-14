@@ -20,11 +20,11 @@ const EventEzy = () => {
       <h1 className="mb-8 text-9xl text-center font-light">EventEzy </h1>
       <br/>
       <h5 className="mb-8 text-2xl text-center font-light">Benvenuto in EventEzy, l'app tutta italiana per la gestione degli eventi. Gestisci i tuoi eventi!</h5>
-      <p>Puoi accedere come Organizzatore per creare e pubblicizzare eventi o come Utente per prendere parte a quelli che reputi più interessanti</p>
+      <p>Puoi accedere come Organizzatore per creare e pubblicizzare eventi o come Cliente per prendere parte a quelli che reputi più interessanti</p>
       <br />
       <br />
       <div>
-        <Button variant="outline-secondary" href="../loginUser">Accedi come Utente</Button>{' '}
+        <Button variant="outline-secondary" href="../loginUser">Accedi come Cliente</Button>{' '}
         <Button variant="outline-secondary" href="../loginOrg">Accedi come Organizzatore</Button>
       </div>
 

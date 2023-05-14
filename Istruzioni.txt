@@ -1,0 +1,1 @@
+Per avviare l'applicazione fare doppio clcik sul file EventEzyStart.BAT

@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
 import EventEzy from './components/EventEzy';
-import EventEzy2 from './components/EventEzy2';
 import LoginOrg from './components/LoginOrg';
 import LoginUser from './components/LoginUser';
 import RegistrazioneOrg from './components/RegistrazioneOrg';
